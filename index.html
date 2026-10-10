@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>Captain Arsenio 閱讀理解測驗</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root{
+    --cream:#F7F2E7;
+    --paper:#FFFFFF;
+    --ink:#2B2416;
+    --ink-soft:#6B6150;
+    --navy-deep:#2B3A55;
+    --navy-leaf:#4F6B96;
+    --navy-pale:#E3E9F2;
+    --amber:#C9792E;
+    --amber-pale:#F6E6D0;
+    --gold:#D9A441;
+    --gold-pale:#FBF0D8;
+    --wrong:#B2483F;
+    --wrong-pale:#F6E1DD;
+    --border:#DCD2BA;
+    --shadow: 0 6px 18px rgba(43,58,85,0.12);
+  }
+  :root:not([data-theme="light"]){
+    @media (prefers-color-scheme: dark){
+      --cream:#1C1A15; --paper:#262320; --ink:#EDE8DD; --ink-soft:#B8AE98;
+      --navy-deep:#9AB1D6; --navy-leaf:#6E8BB8; --navy-pale:#232C3A;
+      --amber:#E8A563; --amber-pale:#3A2E1E; --gold:#E8C476; --gold-pale:#352A17;
+      --wrong:#E2897E; --wrong-pale:#3A2420; --border:#3E372A;
+      --shadow: 0 6px 18px rgba(0,0,0,0.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --cream:#1C1A15; --paper:#262320; --ink:#EDE8DD; --ink-soft:#B8AE98;
+    --navy-deep:#9AB1D6; --navy-leaf:#6E8BB8; --navy-pale:#232C3A;
+    --amber:#E8A563; --amber-pale:#3A2E1E; --gold:#E8C476; --gold-pale:#352A17;
+    --wrong:#E2897E; --wrong-pale:#3A2420; --border:#3E372A;
+    --shadow: 0 6px 18px rgba(0,0,0,0.35);
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--cream);
+    color:var(--ink);
+    font-family: Avenir Next, "Segoe UI", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    line-height:1.55;
+    min-height:100vh;
+  }
+  h1,h2,h3{
+    font-family: "Iowan Old Style","Palatino Linotype", Georgia, serif;
+    font-weight:700;
+    margin:0 0 .3em 0;
+    color:var(--navy-deep);
+  }
+  #app{ max-width:760px; margin:0 auto; padding: 28px 18px 60px; }
+  .topbar{ display:flex; align-items:center; gap:12px; margin-bottom:22px; }
+  .topbar .mark{ font-size:34px; line-height:1; }
+  .topbar h1{ font-size:21px; margin:0; }
+  .topbar .sub{ color:var(--ink-soft); font-size:13px; margin-top:2px; }
+
+  .hero{
+    background: linear-gradient(160deg, var(--navy-pale) 0%, var(--cream) 70%);
+    border:1px solid var(--border);
+    border-radius: 22px 22px 8px 22px;
+    padding:22px 22px 18px;
+    margin-bottom:22px;
+  }
+  .hero p{ color:var(--ink-soft); font-size:14.5px; max-width:48ch; }
+  .overall{
+    margin-top:10px; display:inline-flex; gap:8px; align-items:baseline;
+    background:var(--paper); border:1px solid var(--border); border-radius:999px;
+    padding:6px 14px; font-size:13.5px;
+  }
+  .overall b{ color:var(--navy-deep); font-size:16px;}
+
+  .part-heading{ margin: 26px 0 10px; display:flex; align-items:baseline; gap:10px; }
+  .part-heading .tag{
+    font-size:11.5px; letter-spacing:.02em; background:var(--gold-pale); color:#8A5F13;
+    border-radius:6px; padding:2px 8px;
+  }
+  :root[data-theme="dark"] .part-heading .tag{ color: var(--gold); background: var(--gold-pale); }
+  .module-grid{ display:flex; flex-direction:column; gap:14px; }
+  .module-card{
+    text-align:left; background:var(--paper); border:1px solid var(--border);
+    border-radius: 16px; padding:16px 16px 14px; cursor:pointer;
+    box-shadow:var(--shadow); transition: transform .15s ease;
+    font-family:inherit; color:var(--ink); display:flex; gap:14px; align-items:center;
+  }
+  .module-card:hover{ transform: translateY(-2px); }
+  .module-card .icon{ font-size:30px; flex:0 0 auto; }
+  .module-card .body{ flex:1; min-width:0; }
+  .module-card h3{ font-size:16px; margin:0 0 2px; }
+  .module-card .desc{ font-size:12.5px; color:var(--ink-soft); }
+  .progress-bar-mini{ height:6px; border-radius:4px; background:var(--navy-pale); overflow:hidden; margin-top:8px; }
+  .progress-bar-mini > div{ height:100%; background:var(--navy-leaf); }
+  .status{ margin-top:8px; font-size:12.5px; display:flex; justify-content:space-between; align-items:center; }
+  .badge-score{ font-weight:700; color:var(--navy-deep); }
+
+  .quiz-header{ display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; gap:10px; }
+  .back-link{ background:none;border:none;color:var(--navy-deep); font-size:13.5px; cursor:pointer; padding:4px 0; font-family:inherit; }
+  .progress-track{ flex:1; height:8px; border-radius:6px; background:var(--navy-pale); margin:0 12px; overflow:hidden; }
+  .progress-track > div{ height:100%; background:var(--navy-leaf); transition:width .25s ease; }
+  .qcount{ font-size:12.5px; color:var(--ink-soft); white-space:nowrap;}
+
+  .card{ background:var(--paper); border:1px solid var(--border); border-radius:18px; padding:20px; box-shadow:var(--shadow); }
+  .prompt{ font-size:16.5px; font-weight:600; margin-bottom:14px; }
+
+  .options{ display:flex; flex-direction:column; gap:10px; margin-top:4px;}
+  .option-btn{
+    text-align:left; padding:12px 14px; border-radius:12px; border:1.5px solid var(--border);
+    background:var(--paper); font-size:14.5px; color:var(--ink); cursor:pointer;
+    font-family:inherit; display:flex; gap:10px; align-items:flex-start;
+  }
+  .option-btn .letter{
+    flex:0 0 auto; width:22px; height:22px; border-radius:50%; border:1.5px solid var(--border);
+    display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:var(--ink-soft);
+  }
+  .option-btn:hover{ border-color:var(--navy-leaf); }
+  .option-btn.correct{ border-color:var(--navy-leaf); background:var(--navy-pale); }
+  .option-btn.correct .letter{ background:var(--navy-leaf); border-color:var(--navy-leaf); color:#fff;}
+  .option-btn.wrong{ border-color:var(--wrong); background:var(--wrong-pale); }
+  .option-btn.wrong .letter{ background:var(--wrong); border-color:var(--wrong); color:#fff;}
+  .option-btn.disabled{ cursor:default; }
+  .option-btn.dim{ opacity:.55; }
+
+  .feedback{ margin-top:14px; padding:12px 14px; border-radius:12px; font-size:13.5px; }
+  .feedback.correct{ background:var(--navy-pale); color:var(--navy-deep); }
+  .feedback.wrong{ background:var(--wrong-pale); color:var(--wrong); }
+  .feedback .verdict{ font-weight:700; margin-bottom:6px; }
+  .feedback .explain-en{ color:var(--ink); opacity:.85; font-style:italic; margin-bottom:6px; }
+  .feedback .explain-zh{ color:var(--ink); opacity:.95; }
+
+  .nav-row{ display:flex; justify-content:space-between; margin-top:18px; gap:10px; }
+  .btn{
+    font-family:inherit; border-radius:12px; padding:10px 16px; font-size:14px; cursor:pointer;
+    border:1.5px solid var(--border); background:var(--paper); color:var(--ink);
+  }
+  .btn:disabled{ opacity:.4; cursor:not-allowed; }
+  .btn.primary{ background:var(--navy-deep); border-color:var(--navy-deep); color:#fff; }
+  .btn.primary:disabled{ background:var(--navy-leaf); border-color:var(--navy-leaf); opacity:.45;}
+
+  .score-banner{ text-align:center; background:var(--navy-pale); border-radius:18px; padding:22px; margin-bottom:18px; }
+  .score-banner .big{ font-size:40px; font-weight:700; color:var(--navy-deep); font-family:"Iowan Old Style","Palatino Linotype",Georgia,serif; }
+  .score-banner .pct{ color:var(--ink-soft); font-size:13.5px; margin-top:4px;}
+
+  .qlist{ display:flex; flex-direction:column; gap:8px; }
+  .qrow{
+    display:flex; align-items:center; gap:10px; background:var(--paper); border:1px solid var(--border);
+    border-radius:12px; padding:10px 12px; cursor:pointer; font-family:inherit; font-size:13.5px;
+    color:var(--ink); text-align:left;
+  }
+  .qrow .num{
+    flex:0 0 auto; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-size:11.5px; font-weight:700; background:var(--navy-pale); color:var(--navy-deep);
+  }
+  .qrow.wrong .num{ background:var(--wrong-pale); color:var(--wrong); }
+  .qrow .qtext{ flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .qrow .icon{ flex:0 0 auto; font-size:14px; }
+
+  .summary-actions{ display:flex; gap:10px; margin-top:18px; flex-wrap:wrap; }
+  footer.note{ text-align:center; color:var(--ink-soft); font-size:12px; margin-top:34px; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  var MODULES = {
+    G1: { title:"測驗一", desc:"Motocanary 金絲雀動力機實驗", icon:"🕊️" },
+    G2: { title:"測驗二", desc:"故事背景、角色與主題", icon:"✈️" },
+    G3: { title:"測驗三", desc:"深入理解與詞彙推論", icon:"📖" },
+    V1: { title:"單字 W4", desc:"impulse ~ circumstances", icon:"📝" },
+    V2: { title:"單字 W5", desc:"automatic ~ illogical", icon:"🔤" },
+    V3: { title:"單字 W6", desc:"high ~ go", icon:"✏️" },
+    V4: { title:"單字 W7", desc:"eloped ~ lotion", icon:"🖊️" }
+  };
+  var MODULE_ORDER = ["G1","G2","G3","V1","V2","V3","V4"];
+  var MODULE_GROUPS = [
+    { label:"閱讀理解 Reading Comprehension", tag:"READING", modules:["G1","G2","G3"] },
+    { label:"單字 Vocabulary", tag:"VOCAB", modules:["V1","V2","V3","V4"] }
+  ];
+
+  var Q = {};
+
+  Q.G1 = [
+    {q:"What does Captain Arsenio's description of the Motocanary experiment tell you about him?",
+     opts:["He is determined.","He is odd.","He doesn't know what he is doing.","He gives up easily."],
+     a:1,
+     exEn:"Captain Arsenio's detailed plan to train canaries to power a flying machine by pecking at seeds shows he has quite odd and unusual ideas that make him a rather eccentric character.",
+     exZh:"阿森尼奧船長訓練金絲雀啄食種子來驅動飛行機器的詳細計畫，顯示出他有相當古怪、不尋常的想法，使他成為一個頗為怪異（eccentric）的角色。"},
+    {q:"Why do you think the author chose to include diary entries with illustrations to show each step of the Motocanary experiment?",
+     opts:["To give a visual of the experiment.","To show how silly Captain Arsenio looks.","To explain the process.","To persuade the reader to try the experiment."],
+     a:0,
+     exEn:"The author included diary entries with illustrations to give a visual of the experiment because seeing drawings of each step helps readers better understand how Captain Arsenio put together and tested his Motocanary invention.",
+     exZh:"作者加入附插圖的日記內容，是為了讓讀者能「看見」這個實驗的畫面──透過每個步驟的插圖，讀者能更清楚理解阿森尼奧船長是如何組裝並測試他的「金絲雀動力機」發明的。"},
+    {q:"What lessons does Captain Arsenio learn during the experiment with the Motocanary?",
+     opts:["He loves birds.","He cannot fail.","He is a genius.","He needs better equipment."],
+     a:3,
+     exEn:"During his experiment with the Motocanary, Captain Arsenio realizes that his equipment is inadequate when things don't go as planned, teaching him that he needs better equipment to successfully achieve his flying goals.",
+     exZh:"在金絲雀動力機的實驗中，當事情不如預期發展時，阿森尼奧船長意識到自己的設備不足，這讓他學到：想要成功達成飛行的目標，他需要更好的設備。"},
+    {q:"Based on how he approaches his projects, what is one of Captain Arsenio's character traits?",
+     opts:["lazy","energetic","persistent","productive"],
+     a:2,
+     exEn:"Throughout the story, Captain Arsenio never gives up on his flying machine projects despite repeated failures, showing that he is truly persistent in pursuing his goals.",
+     exZh:"在整個故事中，儘管一再失敗，阿森尼奧船長從未放棄他的飛行機器計畫，這顯示出他在追求目標時真正具有「堅持不懈（persistent）」的特質。"},
+    {q:"What can we learn about Captain Arsenio from his flight diary?",
+     opts:["He is eccentric.","He is confident.","He is unintelligent.","He is irresponsible."],
+     a:1,
+     exEn:"Based on Captain Arsenio's flight diary entries, we can tell he is confident because he continues attempting bold flying experiments and documenting them, even when they don't work out perfectly.",
+     exZh:"從阿森尼奧船長的飛行日記內容可以看出，他是個有自信（confident）的人，因為即使實驗並未完美成功，他仍持續嘗試大膽的飛行實驗，並將過程記錄下來。"},
+    {q:"What does the phrase \u201cObvious results\u201d in paragraph 13 suggest about the narrator's point of view?",
+     opts:["The narrator thinks Captain Arsenio is a hard worker.","The narrator feels sorry for Captain Arsenio.","The narrator thinks Captain Arsenio did not think about his all parts of his invention.","The narrator is frustrated with Captain Arsenio."],
+     a:2,
+     exEn:"When the narrator says \u201cObvious results\u201d, they are implying that anyone could have predicted the crash, suggesting that Captain Arsenio did not think through all parts of his invention carefully before testing it.",
+     exZh:"當敘述者說出「顯而易見的結果（Obvious results）」時，暗示著任何人都能預料到這次墜毀的結果，這表示阿森尼奧船長在測試之前，並沒有把發明的每個部分都仔細思考清楚。"},
+    {q:"What does Captain Arsenio's third failure confirm about him?",
+     opts:["That he is not good at inventions.","That he is determined.","That he is close to getting his flying invention correct.","That he has given up."],
+     a:1,
+     exEn:"Despite failing twice before, Captain Arsenio tries a third time to make his flying invention work, which shows he is determined to achieve his goal and won't give up easily.",
+     exZh:"儘管先前已經失敗了兩次，阿森尼奧船長仍然第三次嘗試讓他的飛行發明成功運作，這顯示出他對達成目標相當堅定（determined），不會輕易放棄。"},
+    {q:"How do the diary images help make the story more entertaining?",
+     opts:["They give the reader directions.","They give the reader visuals to see what is happening.","They make the reader laugh.","They make the reader want to try an invention."],
+     a:1,
+     exEn:"In Captain Arsenio's story, the diary images act like a visual guide that helps readers better picture and understand what's happening in the story by showing visuals of events, characters, and inventions rather than just describing them with words.",
+     exZh:"在阿森尼奧船長的故事裡，日記中的插圖就像一份視覺指南，透過直接呈現事件、角色與發明的畫面（而不只是用文字描述），幫助讀者更容易想像並理解故事中發生的事情。"},
+    {q:"The main problem in the story is...",
+     opts:["Captain Arsenio gets stuck in a tree.","Captain Arsenio gives up.","Captain Arsenio's inventions are not working.","the birds caused a lot of problems."],
+     a:2,
+     exEn:"Throughout the story, we see that the main conflict centers around Captain Arsenio's inventions not working as planned, which leads to his various flying attempts failing and creates the central challenge he needs to overcome.",
+     exZh:"整個故事中，主要的衝突都圍繞在阿森尼奧船長的發明無法如預期運作，這導致他多次飛行嘗試失敗，也形成了他必須克服的核心難題。"},
+    {q:"What is the resolution in the story?",
+     opts:["There is no resolution.","Captain Arsenio's invention worked.","Captain Arsenio learns from his mistakes.","Captain Arsenio discovers he is not an inventor."],
+     a:2,
+     exEn:"The resolution shows how Captain Arsenio learns from his mistakes after his failed attempts at flying, demonstrating growth in his character rather than giving up on his dreams completely.",
+     exZh:"故事的結局呈現出阿森尼奧船長在多次飛行失敗後，從自己的錯誤中學習成長──這展現出他角色上的成長，而不是完全放棄自己的夢想。"},
+    {q:"Which of the following is NOT the setting of the story?",
+     opts:["1700s","Outside","The future"],
+     a:2,
+     exEn:"The story of Captain Arsenio takes place in the 1700s and is set outdoors, but the future is not one of the settings since it's a historical tale rather than a futuristic one.",
+     exZh:"阿森尼奧船長的故事發生在 1700 年代，場景多設定在戶外，但「未來」並不是這個故事的場景之一，因為這是一個歷史故事，而非未來科幻故事。"}
+  ];
+
+  Q.G2 = [
+    {q:"What is the genre of Captain Arsenio?",
+     opts:["Non-fiction","Science-Fiction","Folktale","Fantasy"],
+     a:3,
+     exEn:"This story belongs to the fantasy genre, following an eccentric captain who carries out a series of wildly imaginative flying experiments.",
+     exZh:"這部作品屬於奇幻文學（Fantasy），講述了一位古怪（eccentric）的船長進行各種異想天開飛行實驗的故事。"},
+    {q:"Captain Arsenio was very successful in all his other jobs. (cheese master, blacksmith, scuba instructor, ship captain)",
+     opts:["True","False"],
+     a:1,
+     exEn:"Captain Arsenio was actually not successful in his other jobs like cheese master, blacksmith, and scuba instructor, which is what led him to try being a ship captain!",
+     exZh:"事實上，阿森尼奧船長在起司師傅、鐵匠、潛水教練等其他工作上都不太成功，這也是他後來嘗試成為船長的原因！"},
+    {q:"How do we know about Captain Arsenio?",
+     opts:["His diary was found years ago.","He was in the newspaper.","People learned about him from TV.","He was famous for being a scuba diver."],
+     a:0,
+     exEn:"We know about Captain Arsenio because his diary was found years ago, which provided historians with a first-hand account of his life and adventures.",
+     exZh:"我們之所以認識阿森尼奧船長，是因為他的日記在多年後被人發現，這份日記為歷史學家提供了關於他生平與冒險經歷的第一手資料。"},
+    {q:"What did Captain Arsenio use in his first invention?",
+     opts:["cheese","canaries","springs","a rocket"],
+     a:1,
+     exEn:"In his first invention, the Motocanary, Captain Arsenio used canaries to power the flying machine by having them peck at seeds.",
+     exZh:"在他的第一個發明「金絲雀動力機（Motocanary）」中，他使用了金絲雀（canaries）啄食種子來提供動力。"},
+    {q:"Captain Arsenio's second flight invention relied heavily on...",
+     opts:["temperature","bounce","acceleration","weight"],
+     a:1,
+     exEn:"Captain Arsenio's second flying invention depended heavily on bounce, using a spring-like mechanism to try to launch himself into the air.",
+     exZh:"他的第二個飛行發明高度依賴「彈跳（bounce）」，利用類似彈簧的裝置試圖將自己彈射升空。"},
+    {q:"In his 3rd flight invention, what part did Captain Arsenio forget?",
+     opts:["How to make it bounce","How to make it fast","How to keep it in the air","How to use a spring"],
+     a:2,
+     exEn:"In his third flying invention, Captain Arsenio forgot to figure out how to keep the machine in the air once it had lifted off, which is why it ultimately failed.",
+     exZh:"在他的第三個飛行發明中，他忘記思考「如何讓機器保持在空中（How to keep it in the air）」，這也是這項發明最終失敗的原因。"},
+    {q:"What can you infer from step 7 on pg. 71?",
+     opts:["Captain Arsenio had a sick animal.","Captain Arsenio was unharmed.","Captain Arsenio was dead.","Captain Arsenio was injured."],
+     a:3,
+     exEn:"From step 7 on page 71, we can infer that Captain Arsenio was injured during his experiment, based on the details and illustrations describing what happened to him.",
+     exZh:"從第 71 頁第 7 步驟的描述與插圖可以推斷出，阿森尼奧船長在這次實驗中受傷了（injured）。"},
+    {q:"Why do some believe Captain Arsenio was successful in building his flight machine?",
+     opts:["His diary was found in Egypt.","His diary was found at the bottom of the sea.","His diary was found on the surface of the moon.","All of the above."],
+     a:1,
+     exEn:"Some believe Captain Arsenio succeeded because his diary was found at the bottom of the sea \u2014 suggesting he may have flown out over open water before it was lost, which some readers take as a sign that his final invention actually got off the ground.",
+     exZh:"有些人認為阿森尼奧船長最終成功了，是因為他的日記是在海底被發現的──這暗示他可能曾飛越海面，之後日記才沉落海中，部分讀者將此視為他的最後一項發明確實成功升空的證據。"},
+    {q:"What is the theme of this story?",
+     opts:["You have to be eccentric to invent something.","Never try too many new things.","Failing is sometimes the first step to success.","Flying is the most important thing in life."],
+     a:2,
+     exEn:"The central theme of the story is that failing is sometimes the first step to success \u2014 Captain Arsenio's repeated failures are part of the process that eventually moves him closer to achieving his goal.",
+     exZh:"故事的核心主題在於「失敗有時是邁向成功的第一步」──阿森尼奧船長一再的失敗，正是讓他逐漸邁向目標的過程中不可或缺的一部分。"},
+    {q:"Literary elements include:",
+     opts:["Characters","Setting","Events","All of the above"],
+     a:3,
+     exEn:"Literary elements are the building blocks that make up any story \u2014 this includes characters (who's in the story), setting (where and when it happens), and events (what takes place), which all work together to create a complete narrative.",
+     exZh:"文學要素是構成一個故事的基本元素，包括角色（故事裡有誰）、場景（故事發生的時間與地點），以及事件（故事中發生了什麼事）──這些要素共同組合，才能構成一個完整的故事。"}
+  ];
+
+  Q.G3 = [
+    {q:"What is the main idea of the section titled \u201cThe End and the Beginning\u201d?",
+     opts:["Captain Arsenio always had easy jobs.","Captain Arsenio was bad at everything he tried.","Captain Arsenio had jobs most people would have enjoyed doing.","Captain Arsenio was not interested in most of the things he had tried."],
+     a:1,
+     exEn:"In the section \u201cThe End and the Beginning\u201d, we learn that Captain Arsenio was bad at everything he tried\u2014he kept failing at different jobs because he wasn't good at any of them, showing us why he had to keep starting over with new careers.",
+     exZh:"在「The End and the Beginning（終結與開始）」這個段落中，我們得知阿森尼奧船長幾乎每件事都做不好──他不斷在不同工作上失敗，因為他沒有一項真正擅長，這也說明了他為什麼必須一再從頭開始、嘗試新的職業。"},
+    {q:"Paragraph 4 says that Captain Arsenio showed determination during his flight experiments. What is the meaning of determination as it is used in paragraph 4?",
+     opts:["humor","gratitude","will power","intelligence"],
+     a:2,
+     exEn:"In this context, will power indicates Captain Arsenio's firm decision to keep trying and not give up, despite facing difficulties during his flight experiments\u2014it shows his strong mental strength to achieve his goal no matter what.",
+     exZh:"在這段文字中，「will power（意志力）」指的是阿森尼奧船長即使在飛行實驗中遇到困難，仍堅定地持續嘗試、不輕言放棄的決心──這展現出他不計一切代價也要達成目標的強大意志力。"},
+    {q:"How does Captain Arsenio react to the challenges he faces?",
+     opts:["He gives up easily.","He keeps trying new things.","He blames everything on someone else.","He repeats what has worked for him in the past."],
+     a:1,
+     exEn:"Throughout the story, Captain Arsenio shows determination by trying new things when faced with problems\u2014whether it's testing different flying machines or coming up with creative solutions, he never sticks to just one approach.",
+     exZh:"在整個故事中，阿森尼奧船長面對問題時展現出堅持不懈的態度，總是願意嘗試新的方法──無論是測試不同的飛行機器，還是想出有創意的解決方案，他從不固守單一做法。"},
+    {q:"How do the entries from Captain Arsenio's flight diary compare with the other sections of the passage?",
+     opts:["They discuss the people who helped him build his machines.","They talk about where he learned to build flight machines.","They provide more detail about his experiments.","They explain why he stopped his experiments."],
+     a:2,
+     exEn:"Captain Arsenio's diary entries contain more detailed descriptions of his flight experiments compared to other parts of the passage, giving us a closer look at his actual attempts and experiences during his flying adventures.",
+     exZh:"相較於文章的其他部分，阿森尼奧船長的日記內容對他的飛行實驗有更詳細的描述，讓我們能更深入了解他在飛行冒險過程中實際的嘗試與經歷。"},
+    {q:"In paragraph 3 the narrator tells us that Captain Arsenio's jobs were the easiest but yet he was not good in any of them. What can we infer about him?",
+     opts:["He is a very intelligent individual.","He needs to work for NASA.","He is a rich man.","He is not a very successful individual."],
+     a:3,
+     exEn:"Since Captain Arsenio had the easiest jobs but still couldn't perform well in any of them, we can logically conclude that he is not a very successful individual\u2014someone who struggles even with simple tasks is unlikely to achieve much success.",
+     exZh:"既然阿森尼奧船長做的是最簡單的工作，卻仍然做不好，我們可以合理推論他並不是一個很成功的人──一個連簡單任務都難以勝任的人，通常也難以獲得太大的成就。"},
+    {q:"Why do you think the author used Captain Arsenio's journal entries in the story?",
+     opts:["He did not have enough words to complete the story.","He thought using them would be nice.","He is letting the reader know what Captain Arsenio is thinking.","He is letting the reader know what he sounds like."],
+     a:2,
+     exEn:"The author uses Captain Arsenio's journal entries to give us a peek inside his head and let us know his personal thoughts and feelings, which we wouldn't be able to learn just from watching his actions\u2014this is why he is letting the reader know what Captain Arsenio is thinking.",
+     exZh:"作者運用阿森尼奧船長的日記內容，讓讀者能一窺他內心的想法與感受──這些是單靠觀察他的行為無法得知的，因此作者藉此讓讀者了解阿森尼奧船長的內心想法。"},
+    {q:"In paragraph 11 the author says, \u201cThe acceleration of the runner would allow- according to his plans- the wings to beat up and down in imitation of a bird's flight and lift the machine off the ground.\u201d What does he mean by acceleration?",
+     opts:["The bird that is following him.","The wings beating up and down.","The act of running fast.","Lifting off the ground."],
+     a:2,
+     exEn:"In this context, acceleration refers to the act of running fast\u2014Captain Arsenio needed to run quickly to generate enough speed for the wings of his flying machine to flap and hopefully lift him off the ground, similar to how birds take flight.",
+     exZh:"在這段文字中，「acceleration（加速）」指的是快速奔跑的動作──阿森尼奧船長需要快速奔跑，才能產生足夠的速度讓飛行機器的翅膀拍動，進而希望能讓自己離地飛起，就像鳥類起飛的方式一樣。"},
+    {q:"In paragraph 13 the narrator states, \u201cObvious results\u201d, what does that suggest about Captain Arsenio's project number 3 \u201cCorkscrewpterus\u201d?",
+     opts:["The narrator thinks it will be successful.","The narrator thinks he is a very intelligent inventor.","The narrator wants to join him.","The narrator does not have much trust in his new invention."],
+     a:3,
+     exEn:"When the narrator says \u201cObvious results\u201d, they are using a sarcastic tone to imply that the project will clearly fail, showing their lack of trust in Captain Arsenio's new Corkscrewpterus invention.",
+     exZh:"當敘述者說出「顯而易見的結果（Obvious results）」時，語氣帶有諷刺意味，暗示這項計畫顯然會失敗，顯示出敘述者對阿森尼奧船長這項新發明「Corkscrewpterus」並不信任。"},
+    {q:"From Captain Arsenio's journal entry in paragraph 8, what word describes him the best?",
+     opts:["funny","imaginative","crazy","friendly"],
+     a:1,
+     exEn:"Based on paragraph 8 of Captain Arsenio's journal entry, he is best described as imaginative because he creatively describes his flying adventures and inventions with great detail and enthusiasm.",
+     exZh:"根據第 8 段阿森尼奧船長的日記內容，最適合形容他的詞是「imaginative（富有想像力）」，因為他以豐富的細節與熱情，創意十足地描述了自己的飛行冒險與發明。"},
+    {q:"What lesson does the author teach us using Captain Arsenio's misadventures?",
+     opts:["If at first you don't succeed keep trying.","If the birds don't help you fly use another item.","If nothing works use balloons.","If people laugh at you, just stop trying."],
+     a:0,
+     exEn:"Captain Arsenio never gave up despite his many failed flying attempts\u2014his perseverance teaches us that if at first you don't succeed keep trying, which is an important lesson about not letting failures discourage us from pursuing our dreams.",
+     exZh:"儘管多次飛行嘗試都失敗了，阿森尼奧船長從未放棄──他的堅持教會我們「如果一開始沒有成功，就要繼續嘗試」，這是一個重要的道理，提醒我們不要因為失敗而放棄追求夢想。"}
+  ];
+
+  Q.V1 = [
+    {q:"Which word means \u2018the desire to do something\u2019?",
+     opts:["impulse","contribution","circumstances","prototype"], a:0,
+     exEn:"An impulse is a sudden desire or urge to do something, such as the impulse to take every puppy in the pound.",
+     exZh:"impulse（衝動）是指想做某件事的慾望，例如想把收容所裡每隻小狗都帶走的衝動。"},
+    {q:"The nurse is _____ about her work in the hospital. Which word completes the sentence?",
+     opts:["eccentric","passionate","distinguished","evidently"], a:1,
+     exEn:"Passionate describes having strong emotions about something, so the nurse feels very strongly and enthusiastically about her work.",
+     exZh:"passionate（充滿熱情的）用來形容對某件事有強烈的情感，這句話是說護理師對她在醫院的工作充滿熱情。"},
+    {q:"Which word describes someone who is odd or strange?",
+     opts:["distinguished","conceived","eccentric","contribution"], a:2,
+     exEn:"Eccentric describes someone who is odd or strange, like an inventor who is always working on crazy projects.",
+     exZh:"eccentric（古怪的）用來形容行為奇特、不尋常的人，就像那位總是在做瘋狂計畫的古怪發明家。"},
+    {q:"We built a _____ to show what the real robot would look like. Which word completes the sentence?",
+     opts:["impulse","acceleration","prototype","circumstances"], a:2,
+     exEn:"A prototype is a model created to test an idea before making the final version, like a model built to show what a real robot would look like.",
+     exZh:"prototype（原型／樣品）是指在製作最終成品前，先做出來測試的模型，例如先做出一個模型來展示真正的機器人會是什麼樣子。"},
+    {q:"Which word means \u2018the act of moving faster\u2019?",
+     opts:["circumstances","acceleration","contribution","passionate"], a:1,
+     exEn:"Acceleration is the act of speeding up, such as a car accelerating around a curve and running off the road.",
+     exZh:"acceleration（加速）是指移動速度變快的動作，例如車子在轉彎處加速而衝出路面。"},
+    {q:"The _____ inventor won an award for excellence in airplane design. Which word completes the sentence?",
+     opts:["eccentric","distinguished","conceived","evidently"], a:1,
+     exEn:"Distinguished describes a person or group known and respected for excellence, like an inventor who won an award for outstanding airplane design.",
+     exZh:"distinguished（傑出的）用來形容因優異表現而受到肯定與尊敬的人或群體，例如因飛機設計卓越而獲獎的發明家。"},
+    {q:"Which word means \u2018if something happened for an obvious reason\u2019?",
+     opts:["evidently","impulse","prototype","contribution"], a:0,
+     exEn:"Evidently is used when something happens for a clear, obvious reason, such as schools evidently having rules about cell phones because students must focus on studying.",
+     exZh:"evidently（顯然地）用來表示某件事發生有明顯的原因，例如學校顯然也有關於課堂上使用手機的規定，因為學生必須專心學習。"},
+    {q:"The clever student _____ an idea for a safer bicycle helmet. Which word completes the sentence?",
+     opts:["contribution","circumstances","conceived","distinguished"], a:2,
+     exEn:"Conceived means to have thought of the idea to create something, such as the student coming up with the idea for a safer bicycle helmet.",
+     exZh:"conceived（構想出）是指想出要創造某樣東西的點子，例如這位聰明的學生構想出一個更安全自行車安全帽的點子。"},
+    {q:"Which word means \u2018something that helps make something else happen or succeed\u2019?",
+     opts:["acceleration","eccentric","contribution","evidently"], a:2,
+     exEn:"A contribution is something a person adds that helps a larger effort, like the airplane being an important contribution to long-distance travel.",
+     exZh:"contribution（貢獻）是指某人所做出、對更大的事情有幫助的付出，例如飛機的發明對長途旅行來說是重要的貢獻。"},
+    {q:"Because of the _____ the picnic was cancelled. Which word completes the sentence?",
+     opts:["circumstances","passionate","prototype","conceived"], a:0,
+     exEn:"Circumstances refers to the way an event happened or the causes behind it, such as the reasons that led to the picnic being cancelled.",
+     exZh:"circumstances（情況／狀況）是指某件事發生的方式或原因，例如導致野餐被取消的那些原因。"}
+  ];
+
+  Q.V2 = [
+    {q:"Which word describes controls that work without a person operating them?",
+     opts:["automatic","irregular","illogical","biography"], a:0,
+     exEn:"Automatic describes something with controls that work on their own without a person operating them, like automatic doors in shops.",
+     exZh:"automatic（自動的）用來形容不需要人操作就能運作的控制裝置，例如商店裡的自動門。"},
+    {q:"The _____ industry provides many jobs in America. Which word completes the sentence?",
+     opts:["biology","automobile","illness","irrelevant"], a:1,
+     exEn:"An automobile is a car, and the sentence describes how the car industry provides many jobs in America.",
+     exZh:"automobile（汽車）是指車子，這句話是在說汽車產業在美國提供了許多工作機會。"},
+    {q:"Which word means \u2018the scientific study of the life and structure of plants and animals\u2019?",
+     opts:["biography","biology","irregular","illegal"], a:1,
+     exEn:"Biology is the scientific study of living things, such as studying the biology of animals in science class.",
+     exZh:"biology（生物學）是研究動植物生命與構造的科學，例如在自然課研究動物的生物學。"},
+    {q:"I read a great _____ about Edison last week. Which word completes the sentence?",
+     opts:["automatic","illness","biography","irresponsible"], a:2,
+     exEn:"A biography is the story of a person's life written by someone else, like a book about Edison's life.",
+     exZh:"biography（傳記）是由他人撰寫、記述某人生平的故事，例如一本關於愛迪生生平的書。"},
+    {q:"Which word means \u2018not arranged in an even way or without a smooth pattern\u2019?",
+     opts:["illegal","irregular","biology","automatic"], a:1,
+     exEn:"Irregular describes something without an even, smooth pattern, such as irregular meals combined with insufficient sleep.",
+     exZh:"irregular（不規則的）用來形容排列不均勻、沒有平滑固定模式的事物，例如不規律的飲食加上睡眠不足。"},
+    {q:"The _____ driver drove too fast around the corner and hit a tree. Which word completes the sentence?",
+     opts:["distinguished","irresponsible","illogical","biography"], a:1,
+     exEn:"Irresponsible describes someone who doesn't think enough about the effects of their actions, like a driver who drove too fast and crashed.",
+     exZh:"irresponsible（不負責任的）用來形容沒有充分考慮自己行為後果的人，例如開太快而撞車的駕駛。"},
+    {q:"Which word means \u2018not important to or connected with a situation\u2019?",
+     opts:["irrelevant","automobile","illness","irregular"], a:0,
+     exEn:"Irrelevant describes something that is not connected to or important for a situation, such as remarks that have nothing to do with the topic being studied.",
+     exZh:"irrelevant（不相關的）用來形容與某情況無關或不重要的事物，例如與正在學習的主題無關的發言。"},
+    {q:"I had an _____ and needed to see the doctor. Which word completes the sentence?",
+     opts:["illegal","illness","illogical","biology"], a:1,
+     exEn:"Illness is the state of being physically or mentally sick, which is why a doctor's visit was needed.",
+     exZh:"illness（疾病）是指身體或精神上生病的狀態，所以才需要去看醫生。"},
+    {q:"Which word means \u2018not allowed by the law\u2019?",
+     opts:["illegal","irrelevant","automatic","biography"], a:0,
+     exEn:"Illegal describes something not allowed by law, such as driving a car before becoming an adult.",
+     exZh:"illegal（違法的）用來形容法律不允許的事，例如未成年就開車。"},
+    {q:"She has an _____ fear of insects. Which word completes the sentence?",
+     opts:["irregular","illness","illogical","irresponsible"], a:2,
+     exEn:"Illogical describes something not sensible or well thought out, such as an unreasonable fear of insects.",
+     exZh:"illogical（不合邏輯的）用來形容不明智或未經邏輯思考的事，例如對昆蟲不合理的恐懼。"}
+  ];
+
+  Q.V3 = [
+    {q:"Which word means \u2018measuring a long distance from the bottom to the top\u2019?",
+     opts:["high","slow","fine","foal"], a:0,
+     exEn:"High describes something that measures a long distance from bottom to top, like a wall that goes all the way around a house.",
+     exZh:"high（高的）用來形容從底部到頂部距離很長的事物，例如一道圍繞房子四周的高牆。"},
+    {q:"The _____ suddenly went dark and it started to rain. Which word completes the sentence?",
+     opts:["pine","sky","snow","stroll"], a:1,
+     exEn:"Sky is the space above the earth that you see when you look up, and the sentence describes it suddenly going dark before the rain.",
+     exZh:"sky（天空）是指抬頭能看見的地球上方空間，這句話描述天空突然變暗、接著開始下雨。"},
+    {q:"Which word means \u2018an evergreen forest tree with needle-like leaves\u2019?",
+     opts:["foal","pine","throw","go"], a:1,
+     exEn:"A pine is an evergreen tree with leaves shaped like needles.",
+     exZh:"pine（松樹）是一種葉子像針一樣的常綠森林樹木。"},
+    {q:"\u201cHow's your throat?\u201d \u201cIt's _____ as long as I don't cough.\u201d Which word completes the sentence?",
+     opts:["high","slow","fine","snow"], a:2,
+     exEn:"Fine means very well, so the person is saying their throat feels okay unless they cough.",
+     exZh:"fine（很好的）表示狀態良好，這句話是在說只要不咳嗽，喉嚨就還好。"},
+    {q:"Which word means \u2018not moving, acting, or done quickly; taking a long time\u2019?",
+     opts:["slow","throw","stroll","sky"], a:0,
+     exEn:"Slow describes something that is not quick or takes a long time, such as progress that was slower than expected.",
+     exZh:"slow（緩慢的）用來形容不快速、花費較長時間的事，例如比預期更慢的進步。"},
+    {q:"People were _____ ing along the beach. Which word completes the sentence?",
+     opts:["pine","stroll","foal","go"], a:1,
+     exEn:"Stroll means to walk somewhere in a slow, relaxed way, like people walking leisurely along the beach.",
+     exZh:"stroll（散步）是指以緩慢輕鬆的方式走路，例如人們沿著海灘悠閒散步。"},
+    {q:"Which word means \u2018to send something through the air by moving your hand or arm quickly\u2019?",
+     opts:["throw","fine","high","snow"], a:0,
+     exEn:"Throw means to send something through the air with a quick motion of the hand or arm, such as in a competition to see who can throw the farthest.",
+     exZh:"throw（投擲）是指用手或手臂快速移動，把東西送到空中，例如比賽看誰能丟得最遠。"},
+    {q:"The _____ ran across the field with its mother. Which word completes the sentence?",
+     opts:["sky","slow","foal","stroll"], a:2,
+     exEn:"A foal is a very young horse or donkey, like the one running across the field with its mother.",
+     exZh:"foal（小馬／幼駒）是指非常年幼的馬或驢，例如跟著媽媽一起跑過原野的小馬。"},
+    {q:"Which word means \u2018small soft white flakes of frozen water that fall from the sky in cold weather\u2019?",
+     opts:["pine","snow","high","throw"], a:1,
+     exEn:"Snow refers to soft white frozen flakes that fall from the sky in cold weather, like the heavy snow expected tomorrow.",
+     exZh:"snow（雪）是指在寒冷天氣中從天空落下的柔軟白色凍結水片，例如明天預計會下的大雪。"},
+    {q:"\u201cWhere will you _____ this evening?\u201d \u201cI think I'll _____ and see a movie.\u201d Which word completes the sentence?",
+     opts:["go","fine","foal","sky"], a:0,
+     exEn:"Go means to move somewhere, such as going to see a movie this evening.",
+     exZh:"go（去；前往）是指移動到某處，例如今晚要去看場電影。"}
+  ];
+
+  Q.V4 = [
+    {q:"Which word means \u2018to run away with somebody in order to marry them secretly\u2019?",
+     opts:["eloped","decompose","recline","knowingly"], a:0,
+     exEn:"Eloped means to secretly run away with someone to get married, like the teenage couple who eloped to the U.S.A.",
+     exZh:"eloped（私奔）是指和某人一起偷偷跑去結婚，例如那對私奔到美國的青少年情侶。"},
+    {q:"Viewers of the T.V. show love her for her _____ and outspoken character. Which word completes the sentence?",
+     opts:["soprano","feisty","geode","lotion"], a:1,
+     exEn:"Feisty describes someone brave and determined who isn't afraid to argue or stand up for themselves, like a character viewers love for being feisty and outspoken.",
+     exZh:"feisty（勇敢固執的／潑辣的）用來形容勇敢、堅定，不怕爭論或為自己辯護的人，例如觀眾喜愛她潑辣直率的個性。"},
+    {q:"Which word means \u2018to be destroyed gradually after death by natural processes\u2019?",
+     opts:["amplify","decompose","recycling","recline"], a:1,
+     exEn:"Decompose means to be gradually broken down after death by natural processes, such as our bodies decomposing after we die.",
+     exZh:"decompose（分解／腐爛）是指死後透過自然過程逐漸被破壞分解，例如我們死後身體會逐漸分解。"},
+    {q:"You _____ your songs by using a speaker. Which word completes the sentence?",
+     opts:["eloped","feisty","amplify","geode"], a:2,
+     exEn:"Amplify means to increase the strength of something, especially sound, like using a speaker to amplify songs.",
+     exZh:"amplify（放大／增強）是指增強某樣東西的強度，尤其是聲音，例如用擴音器放大歌聲。"},
+    {q:"Which word means \u2018a singing voice with the highest range for a woman or boy\u2019?",
+     opts:["soprano","decompose","lotion","knowingly"], a:0,
+     exEn:"A soprano is a singer with the highest vocal range for a woman or boy, like the soprano who impressed everyone with her voice.",
+     exZh:"soprano（女高音）是指女性或男孩歌聲中音域最高的聲音，例如那位讓所有人印象深刻的女高音。"},
+    {q:"The naughty student _____ angered the teacher with his remarks. Which word completes the sentence?",
+     opts:["recycling","knowingly","recline","amplify"], a:1,
+     exEn:"Knowingly means to do something on purpose, like a student who intentionally angered the teacher with his remarks.",
+     exZh:"knowingly（故意地／明知地）是指刻意做某件事，例如那位調皮的學生故意用言語惹怒老師。"},
+    {q:"Which word means \u2018the process of treating used things so they can be used again\u2019?",
+     opts:["geode","recycling","eloped","feisty"], a:1,
+     exEn:"Recycling is the process of treating used materials so they can be used again, such as a school doing recycling every day after a certain period.",
+     exZh:"recycling（回收）是指把已使用過的東西重新處理、讓它們可以再被使用的過程，例如學校每天固定時段進行回收。"},
+    {q:"Some people like to collect rocks with _____ s. Which word completes the sentence?",
+     opts:["lotion","soprano","geode","decompose"], a:2,
+     exEn:"A geode is a small hole in rock lined with crystals, or a rock containing one, like the rocks with geodes that some people collect.",
+     exZh:"geode（晶洞）是指岩石中帶有內壁結晶的小孔洞，或含有晶洞的岩石，例如有些人喜歡收集帶有晶洞的岩石。"},
+    {q:"Which word means \u2018to sit or lie in a relaxed way, leaning backwards\u2019?",
+     opts:["amplify","knowingly","recline","recycling"], a:2,
+     exEn:"Recline means to sit or lie back in a relaxed position, like someone reclining on the sofa to watch TV.",
+     exZh:"recline（斜躺／向後靠）是指以放鬆的姿勢坐著或躺著、身體向後傾斜，例如躺在沙發上看電視。"},
+    {q:"Don't forget to cover yourself with suntan _____ or you will burn. Which word completes the sentence?",
+     opts:["geode","lotion","feisty","eloped"], a:1,
+     exEn:"Lotion is a liquid used for cleaning, protecting, or treating the skin, like sunscreen lotion that prevents sunburn at the beach.",
+     exZh:"lotion（乳液／護膚乳）是用來清潔、保護或護理皮膚的液體，例如去海邊時用來防止曬傷的防曬乳。"}
+  ];
+
+  /* ============ STORAGE ============ */
+  var STORAGE_KEY = "arsenio_quiz_v1";
+  function loadState(){
+    try{ var raw = localStorage.getItem(STORAGE_KEY); if(raw) return JSON.parse(raw); }catch(e){}
+    return {};
+  }
+  function saveState(){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(progress)); }catch(e){} }
+  var progress = loadState();
+  MODULE_ORDER.forEach(function(m){
+    if(!progress[m] || progress[m].length !== Q[m].length){
+      progress[m] = Q[m].map(function(){ return {sel:null, correct:null}; });
+    }
+  });
+
+  var view = "home";
+  var curModule = null;
+  var curIndex = 0;
+  var summaryFrom = false;
+
+  var appEl = document.getElementById("app");
+
+  function moduleScore(m){
+    var arr = progress[m];
+    var answered = arr.filter(function(r){ return r.sel !== null; }).length;
+    var correct = arr.filter(function(r){ return r.correct === true; }).length;
+    return { answered: answered, correct: correct, total: arr.length };
+  }
+  function esc(s){ return String(s).replace(/[&<>]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;"}[c]; }); }
+
+  function renderHome(){
+    var totalCorrect = 0, totalAnswered = 0, totalAll = 0, allDone = true;
+    MODULE_ORDER.forEach(function(m){
+      var s = moduleScore(m);
+      totalCorrect += s.correct; totalAnswered += s.answered; totalAll += s.total;
+      if(s.answered < s.total) allDone = false;
+    });
+    var overallHtml = "";
+    if(totalAnswered > 0){
+      overallHtml = '<div class="overall">已作答 <b>' + totalAnswered + '</b> / ' + totalAll + ' 題' +
+        (allDone ? '\u3000\u00b7\u3000總分 <b>' + totalCorrect + '</b> / ' + totalAll : '') + '</div>';
+    }
+    function cardFor(m){
+      var meta = MODULES[m];
+      var s = moduleScore(m);
+      var pct = s.total ? Math.round((s.answered/s.total)*100) : 0;
+      var statusText = s.answered === 0 ? "尚未開始" :
+        (s.answered < s.total ? ("進行中 " + s.answered + "/" + s.total) : ("完成 \u00b7 " + s.correct + "/" + s.total + " 分"));
+      return '' +
+      '<button class="module-card" data-module="' + m + '">' +
+        '<div class="icon">' + meta.icon + '</div>' +
+        '<div class="body">' +
+          '<h3>' + esc(meta.title) + '</h3>' +
+          '<div class="desc">' + esc(meta.desc) + '（' + s.total + ' 題）</div>' +
+          '<div class="progress-bar-mini"><div style="width:' + pct + '%"></div></div>' +
+          '<div class="status"><span>' + esc(statusText) + '</span>' +
+            (s.answered === s.total && s.total>0 ? '<span class="badge-score">' + s.correct + '/' + s.total + '</span>' : '') +
+          '</div>' +
+        '</div>' +
+      '</button>';
+    }
+    var sectionsHtml = MODULE_GROUPS.map(function(g){
+      return '<div class="part-heading"><span class="tag">' + esc(g.tag) + '</span><h2 style="font-size:16px;margin:0;">' + esc(g.label) + '</h2></div>' +
+        '<div class="module-grid">' + g.modules.map(cardFor).join("") + '</div>';
+    }).join("");
+
+    appEl.innerHTML =
+      '<div class="topbar"><div class="mark">\u2708\ufe0f</div><div>' +
+        '<h1>Captain Arsenio</h1>' +
+        '<div class="sub">閱讀理解互動測驗</div>' +
+      '</div></div>' +
+      '<div class="hero">' +
+        '<h2 style="font-size:17px;margin-bottom:6px;">選一組測驗開始作答</h2>' +
+        '<p>每組約 10 題，答完立刻顯示對錯，並附中英雙語解析。可以分批完成，進度會自動保留。</p>' +
+        overallHtml +
+      '</div>' +
+      sectionsHtml +
+      '<footer class="note">根據提供的 Captain Arsenio 閱讀測驗與單字題庫整理製作，僅供學習使用。</footer>';
+
+    Array.prototype.forEach.call(appEl.querySelectorAll(".module-card"), function(btn){
+      btn.addEventListener("click", function(){
+        curModule = btn.getAttribute("data-module");
+        var arr = progress[curModule];
+        var firstUnanswered = arr.findIndex(function(r){ return r.sel === null; });
+        if(firstUnanswered === -1){ view = "summary"; }
+        else { curIndex = firstUnanswered; view = "quiz"; }
+        render();
+      });
+    });
+  }
+
+  function renderQuiz(){
+    var list = Q[curModule];
+    var item = list[curIndex];
+    var rec = progress[curModule][curIndex];
+    var answered = rec.sel !== null;
+    var total = list.length;
+    var pct = Math.round(((curIndex+1)/total)*100);
+
+    var optionsHtml = item.opts.map(function(opt, idx){
+      var cls = "option-btn";
+      if(answered){
+        cls += " disabled";
+        if(idx === item.a) cls += " correct";
+        else if(idx === rec.sel) cls += " wrong";
+        else cls += " dim";
+      }
+      var letter = String.fromCharCode(65+idx);
+      return '<button class="' + cls + '" data-idx="' + idx + '">' +
+        '<span class="letter">' + letter + '</span><span>' + esc(opt) + '</span>' +
+      '</button>';
+    }).join("");
+
+    var feedbackHtml = "";
+    if(answered){
+      var isCorrect = rec.correct;
+      feedbackHtml = '<div class="feedback ' + (isCorrect ? "correct" : "wrong") + '">' +
+        '<div class="verdict">' + (isCorrect ? "\u2705 答對了！" : "\u274c 答錯了，正確答案是「" + esc(item.opts[item.a]) + "」") + '</div>' +
+        '<div class="explain-en">' + esc(item.exEn) + '</div>' +
+        '<div class="explain-zh">' + esc(item.exZh) + '</div>' +
+      '</div>';
+    }
+
+    var isLast = curIndex === total - 1;
+    var nextLabel = summaryFrom ? "返回總覽" : (isLast ? "完成本組 \u2192" : "下一題 \u2192");
+
+    appEl.innerHTML =
+      '<div class="quiz-header">' +
+        '<button class="back-link" id="btnBack">\u2190 ' + (summaryFrom ? "返回總覽" : "回首頁") + '</button>' +
+        '<div class="progress-track"><div style="width:' + pct + '%"></div></div>' +
+        '<div class="qcount">第 ' + (curIndex+1) + ' / ' + total + ' 題</div>' +
+      '</div>' +
+      '<div class="card">' +
+        '<div class="prompt">' + esc(item.q) + '</div>' +
+        '<div class="options">' + optionsHtml + '</div>' +
+        feedbackHtml +
+      '</div>' +
+      '<div class="nav-row">' +
+        '<button class="btn" id="btnPrev" ' + (curIndex===0 ? "disabled" : "") + '>\u2190 上一題</button>' +
+        '<button class="btn primary" id="btnNext" ' + (!answered ? "disabled" : "") + '>' + nextLabel + '</button>' +
+      '</div>';
+
+    appEl.querySelector("#btnBack").addEventListener("click", function(){
+      view = summaryFrom ? "summary" : "home";
+      summaryFrom = false;
+      render();
+    });
+    appEl.querySelector("#btnPrev").addEventListener("click", function(){
+      if(curIndex > 0){ curIndex -= 1; render(); }
+    });
+    appEl.querySelector("#btnNext").addEventListener("click", function(){
+      if(summaryFrom){ view = "summary"; summaryFrom = false; render(); return; }
+      if(isLast){ view = "summary"; render(); return; }
+      curIndex += 1; render();
+    });
+
+    if(!answered){
+      Array.prototype.forEach.call(appEl.querySelectorAll(".option-btn"), function(btn){
+        btn.addEventListener("click", function(){
+          var idx = parseInt(btn.getAttribute("data-idx"), 10);
+          rec.sel = idx;
+          rec.correct = (idx === item.a);
+          saveState();
+          render();
+        });
+      });
+    }
+  }
+
+  function renderSummary(){
+    var list = Q[curModule];
+    var arr = progress[curModule];
+    var correct = arr.filter(function(r){ return r.correct === true; }).length;
+    var total = list.length;
+    var pct = Math.round((correct/total)*100);
+
+    var rowsHtml = list.map(function(item, idx){
+      var rec = arr[idx];
+      var isWrong = rec.sel !== null && !rec.correct;
+      var isUnanswered = rec.sel === null;
+      var icon = isUnanswered ? "\u2b1c" : (rec.correct ? "\u2705" : "\u274c");
+      return '<button class="qrow ' + (isWrong ? "wrong" : "") + '" data-idx="' + idx + '">' +
+        '<span class="num">' + (idx+1) + '</span>' +
+        '<span class="qtext">' + esc(item.q) + '</span>' +
+        '<span class="icon">' + icon + '</span>' +
+      '</button>';
+    }).join("");
+
+    appEl.innerHTML =
+      '<div class="quiz-header">' +
+        '<button class="back-link" id="btnBack">\u2190 回首頁</button>' +
+        '<div class="qcount">' + esc(MODULES[curModule].title) + '</div>' +
+      '</div>' +
+      '<div class="score-banner">' +
+        '<div class="big">' + correct + ' / ' + total + '</div>' +
+        '<div class="pct">答對率 ' + pct + '%</div>' +
+      '</div>' +
+      '<div class="qlist">' + rowsHtml + '</div>' +
+      '<div class="summary-actions">' +
+        '<button class="btn" id="btnRetake">\ud83d\udd04 重新測驗這一組</button>' +
+        '<button class="btn primary" id="btnHome2">回首頁</button>' +
+      '</div>';
+
+    appEl.querySelector("#btnBack").addEventListener("click", function(){ view="home"; render(); });
+    appEl.querySelector("#btnHome2").addEventListener("click", function(){ view="home"; render(); });
+    appEl.querySelector("#btnRetake").addEventListener("click", function(){
+      progress[curModule] = Q[curModule].map(function(){ return {sel:null, correct:null}; });
+      saveState();
+      curIndex = 0;
+      summaryFrom = false;
+      view = "quiz";
+      render();
+    });
+    Array.prototype.forEach.call(appEl.querySelectorAll(".qrow"), function(btn){
+      btn.addEventListener("click", function(){
+        curIndex = parseInt(btn.getAttribute("data-idx"), 10);
+        summaryFrom = true;
+        view = "quiz";
+        render();
+      });
+    });
+  }
+
+  function render(){
+    window.scrollTo(0,0);
+    if(view === "home") renderHome();
+    else if(view === "quiz") renderQuiz();
+    else if(view === "summary") renderSummary();
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>
