@@ -2,758 +2,540 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
-<title>Captain Arsenio 閱讀理解測驗</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Captain Arsenio Quiz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;700&display=swap">
 <style>
+  /* Layout: one centred column styled like Captain Arsenio's flight diary.
+     Ruled-paper masthead, white answer cards, canary-yellow progress. */
   :root{
-    --cream:#F7F2E7;
-    --paper:#FFFFFF;
-    --ink:#2B2416;
-    --ink-soft:#6B6150;
-    --navy-deep:#2B3A55;
-    --navy-leaf:#4F6B96;
-    --navy-pale:#E3E9F2;
-    --amber:#C9792E;
-    --amber-pale:#F6E6D0;
-    --gold:#D9A441;
-    --gold-pale:#FBF0D8;
-    --wrong:#B2483F;
-    --wrong-pale:#F6E1DD;
-    --border:#DCD2BA;
-    --shadow: 0 6px 18px rgba(43,58,85,0.12);
+    --bg:#F3EFE3; --card:#FFFFFF; --ink:#1E2D3D; --muted:#5E6C79; --line:#DDD6C3; --soft:#EAE4D2;
+    --accent:#F2C230; --accent-ink:#1E2D3D; --accent-soft:#FFF3C4; --accent-text:#7A5A00;
+    --primary:#1B6B8F; --primary-ink:#FFFFFF; --primary-soft:#DDEFF6;
+    --good:#1E7A4F; --good-soft:#DCF3E6; --bad:#B3402F; --bad-soft:#FBE6E2; --part:#7A5A00; --part-soft:#FFF0C2;
+    --grid:rgba(27,107,143,.11);
+    --f-display:'Bricolage Grotesque','Noto Sans TC',system-ui,sans-serif;
+    --f-body:'Figtree','Noto Sans TC',system-ui,-apple-system,sans-serif;
+    --f-mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
   }
-  :root:not([data-theme="light"]){
-    @media (prefers-color-scheme: dark){
-      --cream:#1C1A15; --paper:#262320; --ink:#EDE8DD; --ink-soft:#B8AE98;
-      --navy-deep:#9AB1D6; --navy-leaf:#6E8BB8; --navy-pale:#232C3A;
-      --amber:#E8A563; --amber-pale:#3A2E1E; --gold:#E8C476; --gold-pale:#352A17;
-      --wrong:#E2897E; --wrong-pale:#3A2420; --border:#3E372A;
-      --shadow: 0 6px 18px rgba(0,0,0,0.35);
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0F1A22; --card:#17252F; --ink:#EAF0F4; --muted:#9FB0BC; --line:#2A3B48; --soft:#203240;
+      --accent:#FFD24A; --accent-ink:#1E2D3D; --accent-soft:#3A3010; --accent-text:#FFDF7A;
+      --primary:#6CC3E6; --primary-ink:#0F1A22; --primary-soft:#173A4B;
+      --good:#47D9A5; --good-soft:#12362B; --bad:#FF9585; --bad-soft:#40201B; --part:#FFDF7A; --part-soft:#3A3010;
+      --grid:rgba(108,195,230,.11); color-scheme:dark;
     }
   }
   :root[data-theme="dark"]{
-    --cream:#1C1A15; --paper:#262320; --ink:#EDE8DD; --ink-soft:#B8AE98;
-    --navy-deep:#9AB1D6; --navy-leaf:#6E8BB8; --navy-pale:#232C3A;
-    --amber:#E8A563; --amber-pale:#3A2E1E; --gold:#E8C476; --gold-pale:#352A17;
-    --wrong:#E2897E; --wrong-pale:#3A2420; --border:#3E372A;
-    --shadow: 0 6px 18px rgba(0,0,0,0.35);
+    --bg:#0F1A22; --card:#17252F; --ink:#EAF0F4; --muted:#9FB0BC; --line:#2A3B48; --soft:#203240;
+    --accent:#FFD24A; --accent-ink:#1E2D3D; --accent-soft:#3A3010; --accent-text:#FFDF7A;
+    --primary:#6CC3E6; --primary-ink:#0F1A22; --primary-soft:#173A4B;
+    --good:#47D9A5; --good-soft:#12362B; --bad:#FF9585; --bad-soft:#40201B; --part:#FFDF7A; --part-soft:#3A3010;
+    --grid:rgba(108,195,230,.11); color-scheme:dark;
   }
-
-  *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;}
-  body{
-    background:var(--cream);
-    color:var(--ink);
-    font-family: Avenir Next, "Segoe UI", ui-sans-serif, system-ui, -apple-system, sans-serif;
-    line-height:1.55;
-    min-height:100vh;
-  }
-  h1,h2,h3{
-    font-family: "Iowan Old Style","Palatino Linotype", Georgia, serif;
-    font-weight:700;
-    margin:0 0 .3em 0;
-    color:var(--navy-deep);
-  }
-  #app{ max-width:760px; margin:0 auto; padding: 28px 18px 60px; }
-  .topbar{ display:flex; align-items:center; gap:12px; margin-bottom:22px; }
-  .topbar .mark{ font-size:34px; line-height:1; }
-  .topbar h1{ font-size:21px; margin:0; }
-  .topbar .sub{ color:var(--ink-soft); font-size:13px; margin-top:2px; }
-
-  .hero{
-    background: linear-gradient(160deg, var(--navy-pale) 0%, var(--cream) 70%);
-    border:1px solid var(--border);
-    border-radius: 22px 22px 8px 22px;
-    padding:22px 22px 18px;
-    margin-bottom:22px;
-  }
-  .hero p{ color:var(--ink-soft); font-size:14.5px; max-width:48ch; }
-  .overall{
-    margin-top:10px; display:inline-flex; gap:8px; align-items:baseline;
-    background:var(--paper); border:1px solid var(--border); border-radius:999px;
-    padding:6px 14px; font-size:13.5px;
-  }
-  .overall b{ color:var(--navy-deep); font-size:16px;}
-
-  .part-heading{ margin: 26px 0 10px; display:flex; align-items:baseline; gap:10px; }
-  .part-heading .tag{
-    font-size:11.5px; letter-spacing:.02em; background:var(--gold-pale); color:#8A5F13;
-    border-radius:6px; padding:2px 8px;
-  }
-  :root[data-theme="dark"] .part-heading .tag{ color: var(--gold); background: var(--gold-pale); }
-  .module-grid{ display:flex; flex-direction:column; gap:14px; }
-  .module-card{
-    text-align:left; background:var(--paper); border:1px solid var(--border);
-    border-radius: 16px; padding:16px 16px 14px; cursor:pointer;
-    box-shadow:var(--shadow); transition: transform .15s ease;
-    font-family:inherit; color:var(--ink); display:flex; gap:14px; align-items:center;
-  }
-  .module-card:hover{ transform: translateY(-2px); }
-  .module-card .icon{ font-size:30px; flex:0 0 auto; }
-  .module-card .body{ flex:1; min-width:0; }
-  .module-card h3{ font-size:16px; margin:0 0 2px; }
-  .module-card .desc{ font-size:12.5px; color:var(--ink-soft); }
-  .progress-bar-mini{ height:6px; border-radius:4px; background:var(--navy-pale); overflow:hidden; margin-top:8px; }
-  .progress-bar-mini > div{ height:100%; background:var(--navy-leaf); }
-  .status{ margin-top:8px; font-size:12.5px; display:flex; justify-content:space-between; align-items:center; }
-  .badge-score{ font-weight:700; color:var(--navy-deep); }
-
-  .quiz-header{ display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; gap:10px; }
-  .back-link{ background:none;border:none;color:var(--navy-deep); font-size:13.5px; cursor:pointer; padding:4px 0; font-family:inherit; }
-  .progress-track{ flex:1; height:8px; border-radius:6px; background:var(--navy-pale); margin:0 12px; overflow:hidden; }
-  .progress-track > div{ height:100%; background:var(--navy-leaf); transition:width .25s ease; }
-  .qcount{ font-size:12.5px; color:var(--ink-soft); white-space:nowrap;}
-
-  .card{ background:var(--paper); border:1px solid var(--border); border-radius:18px; padding:20px; box-shadow:var(--shadow); }
-  .prompt{ font-size:16.5px; font-weight:600; margin-bottom:14px; }
-
-  .options{ display:flex; flex-direction:column; gap:10px; margin-top:4px;}
-  .option-btn{
-    text-align:left; padding:12px 14px; border-radius:12px; border:1.5px solid var(--border);
-    background:var(--paper); font-size:14.5px; color:var(--ink); cursor:pointer;
-    font-family:inherit; display:flex; gap:10px; align-items:flex-start;
-  }
-  .option-btn .letter{
-    flex:0 0 auto; width:22px; height:22px; border-radius:50%; border:1.5px solid var(--border);
-    display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:var(--ink-soft);
-  }
-  .option-btn:hover{ border-color:var(--navy-leaf); }
-  .option-btn.correct{ border-color:var(--navy-leaf); background:var(--navy-pale); }
-  .option-btn.correct .letter{ background:var(--navy-leaf); border-color:var(--navy-leaf); color:#fff;}
-  .option-btn.wrong{ border-color:var(--wrong); background:var(--wrong-pale); }
-  .option-btn.wrong .letter{ background:var(--wrong); border-color:var(--wrong); color:#fff;}
-  .option-btn.disabled{ cursor:default; }
-  .option-btn.dim{ opacity:.55; }
-
-  .feedback{ margin-top:14px; padding:12px 14px; border-radius:12px; font-size:13.5px; }
-  .feedback.correct{ background:var(--navy-pale); color:var(--navy-deep); }
-  .feedback.wrong{ background:var(--wrong-pale); color:var(--wrong); }
-  .feedback .verdict{ font-weight:700; margin-bottom:6px; }
-  .feedback .explain-en{ color:var(--ink); opacity:.85; font-style:italic; margin-bottom:6px; }
-  .feedback .explain-zh{ color:var(--ink); opacity:.95; }
-
-  .nav-row{ display:flex; justify-content:space-between; margin-top:18px; gap:10px; }
-  .btn{
-    font-family:inherit; border-radius:12px; padding:10px 16px; font-size:14px; cursor:pointer;
-    border:1.5px solid var(--border); background:var(--paper); color:var(--ink);
-  }
-  .btn:disabled{ opacity:.4; cursor:not-allowed; }
-  .btn.primary{ background:var(--navy-deep); border-color:var(--navy-deep); color:#fff; }
-  .btn.primary:disabled{ background:var(--navy-leaf); border-color:var(--navy-leaf); opacity:.45;}
-
-  .score-banner{ text-align:center; background:var(--navy-pale); border-radius:18px; padding:22px; margin-bottom:18px; }
-  .score-banner .big{ font-size:40px; font-weight:700; color:var(--navy-deep); font-family:"Iowan Old Style","Palatino Linotype",Georgia,serif; }
-  .score-banner .pct{ color:var(--ink-soft); font-size:13.5px; margin-top:4px;}
-
-  .qlist{ display:flex; flex-direction:column; gap:8px; }
-  .qrow{
-    display:flex; align-items:center; gap:10px; background:var(--paper); border:1px solid var(--border);
-    border-radius:12px; padding:10px 12px; cursor:pointer; font-family:inherit; font-size:13.5px;
-    color:var(--ink); text-align:left;
-  }
-  .qrow .num{
-    flex:0 0 auto; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center;
-    font-size:11.5px; font-weight:700; background:var(--navy-pale); color:var(--navy-deep);
-  }
-  .qrow.wrong .num{ background:var(--wrong-pale); color:var(--wrong); }
-  .qrow .qtext{ flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-  .qrow .icon{ flex:0 0 auto; font-size:14px; }
-
-  .summary-actions{ display:flex; gap:10px; margin-top:18px; flex-wrap:wrap; }
-  footer.note{ text-align:center; color:var(--ink-soft); font-size:12px; margin-top:34px; }
+  body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55;margin:0;
+       padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+       padding-block:0 40px;-webkit-text-size-adjust:100%}
+  body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--bg)}
+  #root{max-width:760px;margin:0 auto}
+  /* ruled diary-page lines (replaces the blueprint grid) */
+  .blueprint{background-color:var(--card);
+    background-image:linear-gradient(var(--grid) 1px,transparent 1px);
+    background-size:100% 26px}
+  button{font-family:inherit;cursor:pointer}
+  button:disabled{cursor:not-allowed}
+  button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+  .rise{animation:rise .22s ease-out both}
+  @keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  @keyframes flap{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-4px) rotate(-3deg)}}
+  .flap{animation:flap 2.4s ease-in-out infinite;transform-origin:50% 60%}
+  @media (prefers-reduced-motion:reduce){.rise,.flap{animation:none}*{transition:none!important}}
 </style>
 </head>
 <body>
-<div id="app"></div>
+<div id="root"></div>
 
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
 <script>
-(function(){
-  "use strict";
+  tailwind.config = { theme: { extend: {
+    colors: {
+      bg:'var(--bg)', card:'var(--card)', ink:'var(--ink)', muted:'var(--muted)', line:'var(--line)', soft:'var(--soft)',
+      accent:'var(--accent)', accentink:'var(--accent-ink)', accentsoft:'var(--accent-soft)', accenttext:'var(--accent-text)',
+      primary:'var(--primary)', primaryink:'var(--primary-ink)', primarysoft:'var(--primary-soft)',
+      good:'var(--good)', goodsoft:'var(--good-soft)', bad:'var(--bad)', badsoft:'var(--bad-soft)',
+      part:'var(--part)', partsoft:'var(--part-soft)'
+    },
+    fontFamily: { display:['var(--f-display)'], mono:['var(--f-mono)'] }
+  } } };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
 
-  var MODULES = {
-    G1: { title:"測驗一", desc:"Motocanary 金絲雀動力機實驗", icon:"🕊️" },
-    G2: { title:"測驗二", desc:"故事背景、角色與主題", icon:"✈️" },
-    G3: { title:"測驗三", desc:"深入理解與詞彙推論", icon:"📖" },
-    V1: { title:"單字 W4", desc:"impulse ~ circumstances", icon:"📝" },
-    V2: { title:"單字 W5", desc:"automatic ~ illogical", icon:"🔤" },
-    V3: { title:"單字 W6", desc:"high ~ go", icon:"✏️" },
-    V4: { title:"單字 W7", desc:"eloped ~ lotion", icon:"🖊️" }
+<script type="text/babel" data-presets="react">
+const { useState, useEffect, useMemo, useRef } = React;
+
+/* =====================================================================
+   DATA — sections
+   ===================================================================== */
+const SEC = {
+  G1:{ id:'G1', code:'Quiz 1', short:'Q1', en:'The Motocanary Experiment', zh:'金絲雀動力機實驗', kind:'read', tag:'選擇題',
+       dir:`Choose the best answer. (1 point each)` },
+  G2:{ id:'G2', code:'Quiz 2', short:'Q2', en:'Story Elements', zh:'故事背景、角色與主題', kind:'read', tag:'選擇題',
+       dir:`Choose the best answer. (1 point each)` },
+  G3:{ id:'G3', code:'Quiz 3', short:'Q3', en:'Deeper Reading', zh:'深入理解與詞彙推論', kind:'read', tag:'選擇題',
+       dir:`Read each question carefully and choose the best answer. (1 point each)` },
+  V1:{ id:'V1', code:'Vocab W4', short:'W4', en:'impulse ~ circumstances', zh:'單字 W4', kind:'vocab', tag:'選擇題',
+       dir:`Choose the word that matches the meaning or completes the sentence. (1 point each)` },
+  V2:{ id:'V2', code:'Vocab W5', short:'W5', en:'automatic ~ illogical', zh:'單字 W5', kind:'vocab', tag:'選擇題',
+       dir:`Choose the word that matches the meaning or completes the sentence. (1 point each)` },
+  V3:{ id:'V3', code:'Vocab W6', short:'W6', en:'high ~ go', zh:'單字 W6', kind:'vocab', tag:'選擇題',
+       dir:`Choose the word that matches the meaning or completes the sentence. (1 point each)` },
+  V4:{ id:'V4', code:'Vocab W7', short:'W7', en:'eloped ~ lotion', zh:'單字 W7', kind:'vocab', tag:'選擇題',
+       dir:`Choose the word that matches the meaning or completes the sentence. (1 point each)` }
+};
+const ORDER = ['G1','G2','G3','V1','V2','V3','V4'];
+const READ  = ['G1','G2','G3'];
+const VOCAB = ['V1','V2','V3','V4'];
+
+/* =====================================================================
+   DATA — questions (from the Captain Arsenio quiz bank)
+   ===================================================================== */
+const RAW = {"G1":[{"q":"What does Captain Arsenio's description of the Motocanary experiment tell you about him?","o":["He is determined.","He is odd.","He doesn't know what he is doing.","He gives up easily."],"a":1,"en":"Captain Arsenio's detailed plan to train canaries to power a flying machine by pecking at seeds shows he has quite odd and unusual ideas that make him a rather eccentric character.","zh":"阿森尼奧船長訓練金絲雀啄食種子來驅動飛行機器的詳細計畫，顯示出他有相當古怪、不尋常的想法，使他成為一個頗為怪異（eccentric）的角色。"},{"q":"Why do you think the author chose to include diary entries with illustrations to show each step of the Motocanary experiment?","o":["To give a visual of the experiment.","To show how silly Captain Arsenio looks.","To explain the process.","To persuade the reader to try the experiment."],"a":0,"en":"The author included diary entries with illustrations to give a visual of the experiment because seeing drawings of each step helps readers better understand how Captain Arsenio put together and tested his Motocanary invention.","zh":"作者加入附插圖的日記內容，是為了讓讀者能「看見」這個實驗的畫面──透過每個步驟的插圖，讀者能更清楚理解阿森尼奧船長是如何組裝並測試他的「金絲雀動力機」發明的。"},{"q":"What lessons does Captain Arsenio learn during the experiment with the Motocanary?","o":["He loves birds.","He cannot fail.","He is a genius.","He needs better equipment."],"a":3,"en":"During his experiment with the Motocanary, Captain Arsenio realizes that his equipment is inadequate when things don't go as planned, teaching him that he needs better equipment to successfully achieve his flying goals.","zh":"在金絲雀動力機的實驗中，當事情不如預期發展時，阿森尼奧船長意識到自己的設備不足，這讓他學到：想要成功達成飛行的目標，他需要更好的設備。"},{"q":"Based on how he approaches his projects, what is one of Captain Arsenio's character traits?","o":["lazy","energetic","persistent","productive"],"a":2,"en":"Throughout the story, Captain Arsenio never gives up on his flying machine projects despite repeated failures, showing that he is truly persistent in pursuing his goals.","zh":"在整個故事中，儘管一再失敗，阿森尼奧船長從未放棄他的飛行機器計畫，這顯示出他在追求目標時真正具有「堅持不懈（persistent）」的特質。"},{"q":"What can we learn about Captain Arsenio from his flight diary?","o":["He is eccentric.","He is confident.","He is unintelligent.","He is irresponsible."],"a":1,"en":"Based on Captain Arsenio's flight diary entries, we can tell he is confident because he continues attempting bold flying experiments and documenting them, even when they don't work out perfectly.","zh":"從阿森尼奧船長的飛行日記內容可以看出，他是個有自信（confident）的人，因為即使實驗並未完美成功，他仍持續嘗試大膽的飛行實驗，並將過程記錄下來。"},{"q":"What does the phrase “Obvious results” in paragraph 13 suggest about the narrator's point of view?","o":["The narrator thinks Captain Arsenio is a hard worker.","The narrator feels sorry for Captain Arsenio.","The narrator thinks Captain Arsenio did not think about his all parts of his invention.","The narrator is frustrated with Captain Arsenio."],"a":2,"en":"When the narrator says “Obvious results”, they are implying that anyone could have predicted the crash, suggesting that Captain Arsenio did not think through all parts of his invention carefully before testing it.","zh":"當敘述者說出「顯而易見的結果（Obvious results）」時，暗示著任何人都能預料到這次墜毀的結果，這表示阿森尼奧船長在測試之前，並沒有把發明的每個部分都仔細思考清楚。"},{"q":"What does Captain Arsenio's third failure confirm about him?","o":["That he is not good at inventions.","That he is determined.","That he is close to getting his flying invention correct.","That he has given up."],"a":1,"en":"Despite failing twice before, Captain Arsenio tries a third time to make his flying invention work, which shows he is determined to achieve his goal and won't give up easily.","zh":"儘管先前已經失敗了兩次，阿森尼奧船長仍然第三次嘗試讓他的飛行發明成功運作，這顯示出他對達成目標相當堅定（determined），不會輕易放棄。"},{"q":"How do the diary images help make the story more entertaining?","o":["They give the reader directions.","They give the reader visuals to see what is happening.","They make the reader laugh.","They make the reader want to try an invention."],"a":1,"en":"In Captain Arsenio's story, the diary images act like a visual guide that helps readers better picture and understand what's happening in the story by showing visuals of events, characters, and inventions rather than just describing them with words.","zh":"在阿森尼奧船長的故事裡，日記中的插圖就像一份視覺指南，透過直接呈現事件、角色與發明的畫面（而不只是用文字描述），幫助讀者更容易想像並理解故事中發生的事情。"},{"q":"The main problem in the story is...","o":["Captain Arsenio gets stuck in a tree.","Captain Arsenio gives up.","Captain Arsenio's inventions are not working.","the birds caused a lot of problems."],"a":2,"en":"Throughout the story, we see that the main conflict centers around Captain Arsenio's inventions not working as planned, which leads to his various flying attempts failing and creates the central challenge he needs to overcome.","zh":"整個故事中，主要的衝突都圍繞在阿森尼奧船長的發明無法如預期運作，這導致他多次飛行嘗試失敗，也形成了他必須克服的核心難題。"},{"q":"What is the resolution in the story?","o":["There is no resolution.","Captain Arsenio's invention worked.","Captain Arsenio learns from his mistakes.","Captain Arsenio discovers he is not an inventor."],"a":2,"en":"The resolution shows how Captain Arsenio learns from his mistakes after his failed attempts at flying, demonstrating growth in his character rather than giving up on his dreams completely.","zh":"故事的結局呈現出阿森尼奧船長在多次飛行失敗後，從自己的錯誤中學習成長──這展現出他角色上的成長，而不是完全放棄自己的夢想。"},{"q":"Which of the following is NOT the setting of the story?","o":["1700s","Outside","The future"],"a":2,"en":"The story of Captain Arsenio takes place in the 1700s and is set outdoors, but the future is not one of the settings since it's a historical tale rather than a futuristic one.","zh":"阿森尼奧船長的故事發生在 1700 年代，場景多設定在戶外，但「未來」並不是這個故事的場景之一，因為這是一個歷史故事，而非未來科幻故事。"}],"G2":[{"q":"What is the genre of Captain Arsenio?","o":["Non-fiction","Science-Fiction","Folktale","Fantasy"],"a":3,"en":"This story belongs to the fantasy genre, following an eccentric captain who carries out a series of wildly imaginative flying experiments.","zh":"這部作品屬於奇幻文學（Fantasy），講述了一位古怪（eccentric）的船長進行各種異想天開飛行實驗的故事。"},{"q":"Captain Arsenio was very successful in all his other jobs. (cheese master, blacksmith, scuba instructor, ship captain)","o":["True","False"],"a":1,"en":"Captain Arsenio was actually not successful in his other jobs like cheese master, blacksmith, and scuba instructor, which is what led him to try being a ship captain!","zh":"事實上，阿森尼奧船長在起司師傅、鐵匠、潛水教練等其他工作上都不太成功，這也是他後來嘗試成為船長的原因！"},{"q":"How do we know about Captain Arsenio?","o":["His diary was found years ago.","He was in the newspaper.","People learned about him from TV.","He was famous for being a scuba diver."],"a":0,"en":"We know about Captain Arsenio because his diary was found years ago, which provided historians with a first-hand account of his life and adventures.","zh":"我們之所以認識阿森尼奧船長，是因為他的日記在多年後被人發現，這份日記為歷史學家提供了關於他生平與冒險經歷的第一手資料。"},{"q":"What did Captain Arsenio use in his first invention?","o":["cheese","canaries","springs","a rocket"],"a":1,"en":"In his first invention, the Motocanary, Captain Arsenio used canaries to power the flying machine by having them peck at seeds.","zh":"在他的第一個發明「金絲雀動力機（Motocanary）」中，他使用了金絲雀（canaries）啄食種子來提供動力。"},{"q":"Captain Arsenio's second flight invention relied heavily on...","o":["temperature","bounce","acceleration","weight"],"a":2,"en":"Captain Arsenio's second flying invention depended heavily on acceleration, requiring enough running speed to build up before the machine could attempt to lift off.","zh":"他的第二個飛行發明高度依賴「加速（acceleration）」，需要先累積足夠的奔跑速度，機器才能嘗試離地升空。"},{"q":"In his 3rd flight invention, what part did Captain Arsenio forget?","o":["How to make it bounce","How to make it fast","How to keep it in the air","How to use a spring"],"a":2,"en":"In his third flying invention, Captain Arsenio forgot to figure out how to keep the machine in the air once it had lifted off, which is why it ultimately failed.","zh":"在他的第三個飛行發明中，他忘記思考「如何讓機器保持在空中（How to keep it in the air）」，這也是這項發明最終失敗的原因。"},{"q":"What can you infer from step 7 on pg. 71?","o":["Captain Arsenio had a sick animal.","Captain Arsenio was unharmed.","Captain Arsenio was dead.","Captain Arsenio was injured."],"a":3,"en":"From step 7 on page 71, we can infer that Captain Arsenio was injured during his experiment, based on the details and illustrations describing what happened to him.","zh":"從第 71 頁第 7 步驟的描述與插圖可以推斷出，阿森尼奧船長在這次實驗中受傷了（injured）。"},{"q":"Why do some believe Captain Arsenio was successful in building his flight machine?","o":["His diary was found in Egypt.","His diary was found at the bottom of the sea.","His diary was found on the surface of the moon.","All of the above."],"a":1,"en":"Some believe Captain Arsenio succeeded because his diary was found at the bottom of the sea — suggesting he may have flown out over open water before it was lost, which some readers take as a sign that his final invention actually got off the ground.","zh":"有些人認為阿森尼奧船長最終成功了，是因為他的日記是在海底被發現的──這暗示他可能曾飛越海面，之後日記才沉落海中，部分讀者將此視為他的最後一項發明確實成功升空的證據。"},{"q":"What is the theme of this story?","o":["You have to be eccentric to invent something.","Never try too many new things.","Failing is sometimes the first step to success.","Flying is the most important thing in life."],"a":2,"en":"The central theme of the story is that failing is sometimes the first step to success — Captain Arsenio's repeated failures are part of the process that eventually moves him closer to achieving his goal.","zh":"故事的核心主題在於「失敗有時是邁向成功的第一步」──阿森尼奧船長一再的失敗，正是讓他逐漸邁向目標的過程中不可或缺的一部分。"},{"q":"Literary elements include:","o":["Characters","Setting","Events","All of the above"],"a":3,"en":"Literary elements are the building blocks that make up any story — this includes characters (who's in the story), setting (where and when it happens), and events (what takes place), which all work together to create a complete narrative.","zh":"文學要素是構成一個故事的基本元素，包括角色（故事裡有誰）、場景（故事發生的時間與地點），以及事件（故事中發生了什麼事）──這些要素共同組合，才能構成一個完整的故事。"}],"G3":[{"q":"What is the main idea of the section titled “The End and the Beginning”?","o":["Captain Arsenio always had easy jobs.","Captain Arsenio was bad at everything he tried.","Captain Arsenio had jobs most people would have enjoyed doing.","Captain Arsenio was not interested in most of the things he had tried."],"a":1,"en":"In the section “The End and the Beginning”, we learn that Captain Arsenio was bad at everything he tried—he kept failing at different jobs because he wasn't good at any of them, showing us why he had to keep starting over with new careers.","zh":"在「The End and the Beginning（終結與開始）」這個段落中，我們得知阿森尼奧船長幾乎每件事都做不好──他不斷在不同工作上失敗，因為他沒有一項真正擅長，這也說明了他為什麼必須一再從頭開始、嘗試新的職業。"},{"q":"Paragraph 4 says that Captain Arsenio showed determination during his flight experiments. What is the meaning of determination as it is used in paragraph 4?","o":["humor","gratitude","will power","intelligence"],"a":2,"en":"In this context, will power indicates Captain Arsenio's firm decision to keep trying and not give up, despite facing difficulties during his flight experiments—it shows his strong mental strength to achieve his goal no matter what.","zh":"在這段文字中，「will power（意志力）」指的是阿森尼奧船長即使在飛行實驗中遇到困難，仍堅定地持續嘗試、不輕言放棄的決心──這展現出他不計一切代價也要達成目標的強大意志力。"},{"q":"How does Captain Arsenio react to the challenges he faces?","o":["He gives up easily.","He keeps trying new things.","He blames everything on someone else.","He repeats what has worked for him in the past."],"a":1,"en":"Throughout the story, Captain Arsenio shows determination by trying new things when faced with problems—whether it's testing different flying machines or coming up with creative solutions, he never sticks to just one approach.","zh":"在整個故事中，阿森尼奧船長面對問題時展現出堅持不懈的態度，總是願意嘗試新的方法──無論是測試不同的飛行機器，還是想出有創意的解決方案，他從不固守單一做法。"},{"q":"How do the entries from Captain Arsenio's flight diary compare with the other sections of the passage?","o":["They discuss the people who helped him build his machines.","They talk about where he learned to build flight machines.","They provide more detail about his experiments.","They explain why he stopped his experiments."],"a":2,"en":"Captain Arsenio's diary entries contain more detailed descriptions of his flight experiments compared to other parts of the passage, giving us a closer look at his actual attempts and experiences during his flying adventures.","zh":"相較於文章的其他部分，阿森尼奧船長的日記內容對他的飛行實驗有更詳細的描述，讓我們能更深入了解他在飛行冒險過程中實際的嘗試與經歷。"},{"q":"In paragraph 3 the narrator tells us that Captain Arsenio's jobs were the easiest but yet he was not good in any of them. What can we infer about him?","o":["He is a very intelligent individual.","He needs to work for NASA.","He is a rich man.","He is not a very successful individual."],"a":3,"en":"Since Captain Arsenio had the easiest jobs but still couldn't perform well in any of them, we can logically conclude that he is not a very successful individual—someone who struggles even with simple tasks is unlikely to achieve much success.","zh":"既然阿森尼奧船長做的是最簡單的工作，卻仍然做不好，我們可以合理推論他並不是一個很成功的人──一個連簡單任務都難以勝任的人，通常也難以獲得太大的成就。"},{"q":"Why do you think the author used Captain Arsenio's journal entries in the story?","o":["He did not have enough words to complete the story.","He thought using them would be nice.","He is letting the reader know what Captain Arsenio is thinking.","He is letting the reader know what he sounds like."],"a":2,"en":"The author uses Captain Arsenio's journal entries to give us a peek inside his head and let us know his personal thoughts and feelings, which we wouldn't be able to learn just from watching his actions—this is why he is letting the reader know what Captain Arsenio is thinking.","zh":"作者運用阿森尼奧船長的日記內容，讓讀者能一窺他內心的想法與感受──這些是單靠觀察他的行為無法得知的，因此作者藉此讓讀者了解阿森尼奧船長的內心想法。"},{"q":"In paragraph 11 the author says, “The acceleration of the runner would allow- according to his plans- the wings to beat up and down in imitation of a bird's flight and lift the machine off the ground.” What does he mean by acceleration?","o":["The bird that is following him.","The wings beating up and down.","The act of running fast.","Lifting off the ground."],"a":2,"en":"In this context, acceleration refers to the act of running fast—Captain Arsenio needed to run quickly to generate enough speed for the wings of his flying machine to flap and hopefully lift him off the ground, similar to how birds take flight.","zh":"在這段文字中，「acceleration（加速）」指的是快速奔跑的動作──阿森尼奧船長需要快速奔跑，才能產生足夠的速度讓飛行機器的翅膀拍動，進而希望能讓自己離地飛起，就像鳥類起飛的方式一樣。"},{"q":"In paragraph 13 the narrator states, “Obvious results”, what does that suggest about Captain Arsenio's project number 3 “Corkscrewpterus”?","o":["The narrator thinks it will be successful.","The narrator thinks he is a very intelligent inventor.","The narrator wants to join him.","The narrator does not have much trust in his new invention."],"a":3,"en":"When the narrator says “Obvious results”, they are using a sarcastic tone to imply that the project will clearly fail, showing their lack of trust in Captain Arsenio's new Corkscrewpterus invention.","zh":"當敘述者說出「顯而易見的結果（Obvious results）」時，語氣帶有諷刺意味，暗示這項計畫顯然會失敗，顯示出敘述者對阿森尼奧船長這項新發明「Corkscrewpterus」並不信任。"},{"q":"From Captain Arsenio's journal entry in paragraph 8, what word describes him the best?","o":["funny","imaginative","crazy","friendly"],"a":1,"en":"Based on paragraph 8 of Captain Arsenio's journal entry, he is best described as imaginative because he creatively describes his flying adventures and inventions with great detail and enthusiasm.","zh":"根據第 8 段阿森尼奧船長的日記內容，最適合形容他的詞是「imaginative（富有想像力）」，因為他以豐富的細節與熱情，創意十足地描述了自己的飛行冒險與發明。"},{"q":"What lesson does the author teach us using Captain Arsenio's misadventures?","o":["If at first you don't succeed keep trying.","If the birds don't help you fly use another item.","If nothing works use balloons.","If people laugh at you, just stop trying."],"a":0,"en":"Captain Arsenio never gave up despite his many failed flying attempts—his perseverance teaches us that if at first you don't succeed keep trying, which is an important lesson about not letting failures discourage us from pursuing our dreams.","zh":"儘管多次飛行嘗試都失敗了，阿森尼奧船長從未放棄──他的堅持教會我們「如果一開始沒有成功，就要繼續嘗試」，這是一個重要的道理，提醒我們不要因為失敗而放棄追求夢想。"}],"V1":[{"q":"Which word means ‘the desire to do something’?","o":["impulse","contribution","circumstances","prototype"],"a":0,"en":"An impulse is a sudden desire or urge to do something, such as the impulse to take every puppy in the pound.","zh":"impulse（衝動）是指想做某件事的慾望，例如想把收容所裡每隻小狗都帶走的衝動。"},{"q":"The nurse is _____ about her work in the hospital. Which word completes the sentence?","o":["eccentric","passionate","distinguished","evidently"],"a":1,"en":"Passionate describes having strong emotions about something, so the nurse feels very strongly and enthusiastically about her work.","zh":"passionate（充滿熱情的）用來形容對某件事有強烈的情感，這句話是說護理師對她在醫院的工作充滿熱情。"},{"q":"Which word describes someone who is odd or strange?","o":["distinguished","conceived","eccentric","contribution"],"a":2,"en":"Eccentric describes someone who is odd or strange, like an inventor who is always working on crazy projects.","zh":"eccentric（古怪的）用來形容行為奇特、不尋常的人，就像那位總是在做瘋狂計畫的古怪發明家。"},{"q":"We built a _____ to show what the real robot would look like. Which word completes the sentence?","o":["impulse","acceleration","prototype","circumstances"],"a":2,"en":"A prototype is a model created to test an idea before making the final version, like a model built to show what a real robot would look like.","zh":"prototype（原型／樣品）是指在製作最終成品前，先做出來測試的模型，例如先做出一個模型來展示真正的機器人會是什麼樣子。"},{"q":"Which word means ‘the act of moving faster’?","o":["circumstances","acceleration","contribution","passionate"],"a":1,"en":"Acceleration is the act of speeding up, such as a car accelerating around a curve and running off the road.","zh":"acceleration（加速）是指移動速度變快的動作，例如車子在轉彎處加速而衝出路面。"},{"q":"The _____ inventor won an award for excellence in airplane design. Which word completes the sentence?","o":["eccentric","distinguished","conceived","evidently"],"a":1,"en":"Distinguished describes a person or group known and respected for excellence, like an inventor who won an award for outstanding airplane design.","zh":"distinguished（傑出的）用來形容因優異表現而受到肯定與尊敬的人或群體，例如因飛機設計卓越而獲獎的發明家。"},{"q":"Which word means ‘if something happened for an obvious reason’?","o":["evidently","impulse","prototype","contribution"],"a":0,"en":"Evidently is used when something happens for a clear, obvious reason, such as schools evidently having rules about cell phones because students must focus on studying.","zh":"evidently（顯然地）用來表示某件事發生有明顯的原因，例如學校顯然也有關於課堂上使用手機的規定，因為學生必須專心學習。"},{"q":"The clever student _____ an idea for a safer bicycle helmet. Which word completes the sentence?","o":["contribution","circumstances","conceived","distinguished"],"a":2,"en":"Conceived means to have thought of the idea to create something, such as the student coming up with the idea for a safer bicycle helmet.","zh":"conceived（構想出）是指想出要創造某樣東西的點子，例如這位聰明的學生構想出一個更安全自行車安全帽的點子。"},{"q":"Which word means ‘something that helps make something else happen or succeed’?","o":["acceleration","eccentric","contribution","evidently"],"a":2,"en":"A contribution is something a person adds that helps a larger effort, like the airplane being an important contribution to long-distance travel.","zh":"contribution（貢獻）是指某人所做出、對更大的事情有幫助的付出，例如飛機的發明對長途旅行來說是重要的貢獻。"},{"q":"Because of the _____ the picnic was cancelled. Which word completes the sentence?","o":["circumstances","passionate","prototype","conceived"],"a":0,"en":"Circumstances refers to the way an event happened or the causes behind it, such as the reasons that led to the picnic being cancelled.","zh":"circumstances（情況／狀況）是指某件事發生的方式或原因，例如導致野餐被取消的那些原因。"}],"V2":[{"q":"Which word describes controls that work without a person operating them?","o":["automatic","irregular","illogical","biography"],"a":0,"en":"Automatic describes something with controls that work on their own without a person operating them, like automatic doors in shops.","zh":"automatic（自動的）用來形容不需要人操作就能運作的控制裝置，例如商店裡的自動門。"},{"q":"The _____ industry provides many jobs in America. Which word completes the sentence?","o":["biology","automobile","illness","irrelevant"],"a":1,"en":"An automobile is a car, and the sentence describes how the car industry provides many jobs in America.","zh":"automobile（汽車）是指車子，這句話是在說汽車產業在美國提供了許多工作機會。"},{"q":"Which word means ‘the scientific study of the life and structure of plants and animals’?","o":["biography","biology","irregular","illegal"],"a":1,"en":"Biology is the scientific study of living things, such as studying the biology of animals in science class.","zh":"biology（生物學）是研究動植物生命與構造的科學，例如在自然課研究動物的生物學。"},{"q":"I read a great _____ about Edison last week. Which word completes the sentence?","o":["automatic","illness","biography","irresponsible"],"a":2,"en":"A biography is the story of a person's life written by someone else, like a book about Edison's life.","zh":"biography（傳記）是由他人撰寫、記述某人生平的故事，例如一本關於愛迪生生平的書。"},{"q":"Which word means ‘not arranged in an even way or without a smooth pattern’?","o":["illegal","irregular","biology","automatic"],"a":1,"en":"Irregular describes something without an even, smooth pattern, such as irregular meals combined with insufficient sleep.","zh":"irregular（不規則的）用來形容排列不均勻、沒有平滑固定模式的事物，例如不規律的飲食加上睡眠不足。"},{"q":"The _____ driver drove too fast around the corner and hit a tree. Which word completes the sentence?","o":["distinguished","irresponsible","illogical","biography"],"a":1,"en":"Irresponsible describes someone who doesn't think enough about the effects of their actions, like a driver who drove too fast and crashed.","zh":"irresponsible（不負責任的）用來形容沒有充分考慮自己行為後果的人，例如開太快而撞車的駕駛。"},{"q":"Which word means ‘not important to or connected with a situation’?","o":["irrelevant","automobile","illness","irregular"],"a":0,"en":"Irrelevant describes something that is not connected to or important for a situation, such as remarks that have nothing to do with the topic being studied.","zh":"irrelevant（不相關的）用來形容與某情況無關或不重要的事物，例如與正在學習的主題無關的發言。"},{"q":"I had an _____ and needed to see the doctor. Which word completes the sentence?","o":["illegal","illness","illogical","biology"],"a":1,"en":"Illness is the state of being physically or mentally sick, which is why a doctor's visit was needed.","zh":"illness（疾病）是指身體或精神上生病的狀態，所以才需要去看醫生。"},{"q":"Which word means ‘not allowed by the law’?","o":["illegal","irrelevant","automatic","biography"],"a":0,"en":"Illegal describes something not allowed by law, such as driving a car before becoming an adult.","zh":"illegal（違法的）用來形容法律不允許的事，例如未成年就開車。"},{"q":"She has an _____ fear of insects. Which word completes the sentence?","o":["irregular","illness","illogical","irresponsible"],"a":2,"en":"Illogical describes something not sensible or well thought out, such as an unreasonable fear of insects.","zh":"illogical（不合邏輯的）用來形容不明智或未經邏輯思考的事，例如對昆蟲不合理的恐懼。"}],"V3":[{"q":"Which word means ‘measuring a long distance from the bottom to the top’?","o":["high","slow","fine","foal"],"a":0,"en":"High describes something that measures a long distance from bottom to top, like a wall that goes all the way around a house.","zh":"high（高的）用來形容從底部到頂部距離很長的事物，例如一道圍繞房子四周的高牆。"},{"q":"The _____ suddenly went dark and it started to rain. Which word completes the sentence?","o":["pine","sky","snow","stroll"],"a":1,"en":"Sky is the space above the earth that you see when you look up, and the sentence describes it suddenly going dark before the rain.","zh":"sky（天空）是指抬頭能看見的地球上方空間，這句話描述天空突然變暗、接著開始下雨。"},{"q":"Which word means ‘an evergreen forest tree with needle-like leaves’?","o":["foal","pine","throw","go"],"a":1,"en":"A pine is an evergreen tree with leaves shaped like needles.","zh":"pine（松樹）是一種葉子像針一樣的常綠森林樹木。"},{"q":"“How's your throat?” “It's _____ as long as I don't cough.” Which word completes the sentence?","o":["high","slow","fine","snow"],"a":2,"en":"Fine means very well, so the person is saying their throat feels okay unless they cough.","zh":"fine（很好的）表示狀態良好，這句話是在說只要不咳嗽，喉嚨就還好。"},{"q":"Which word means ‘not moving, acting, or done quickly; taking a long time’?","o":["slow","throw","stroll","sky"],"a":0,"en":"Slow describes something that is not quick or takes a long time, such as progress that was slower than expected.","zh":"slow（緩慢的）用來形容不快速、花費較長時間的事，例如比預期更慢的進步。"},{"q":"People were _____ ing along the beach. Which word completes the sentence?","o":["pine","stroll","foal","go"],"a":1,"en":"Stroll means to walk somewhere in a slow, relaxed way, like people walking leisurely along the beach.","zh":"stroll（散步）是指以緩慢輕鬆的方式走路，例如人們沿著海灘悠閒散步。"},{"q":"Which word means ‘to send something through the air by moving your hand or arm quickly’?","o":["throw","fine","high","snow"],"a":0,"en":"Throw means to send something through the air with a quick motion of the hand or arm, such as in a competition to see who can throw the farthest.","zh":"throw（投擲）是指用手或手臂快速移動，把東西送到空中，例如比賽看誰能丟得最遠。"},{"q":"The _____ ran across the field with its mother. Which word completes the sentence?","o":["sky","slow","foal","stroll"],"a":2,"en":"A foal is a very young horse or donkey, like the one running across the field with its mother.","zh":"foal（小馬／幼駒）是指非常年幼的馬或驢，例如跟著媽媽一起跑過原野的小馬。"},{"q":"Which word means ‘small soft white flakes of frozen water that fall from the sky in cold weather’?","o":["pine","snow","high","throw"],"a":1,"en":"Snow refers to soft white frozen flakes that fall from the sky in cold weather, like the heavy snow expected tomorrow.","zh":"snow（雪）是指在寒冷天氣中從天空落下的柔軟白色凍結水片，例如明天預計會下的大雪。"},{"q":"“Where will you _____ this evening?” “I think I'll _____ and see a movie.” Which word completes the sentence?","o":["go","fine","foal","sky"],"a":0,"en":"Go means to move somewhere, such as going to see a movie this evening.","zh":"go（去；前往）是指移動到某處，例如今晚要去看場電影。"}],"V4":[{"q":"Which word means ‘to run away with somebody in order to marry them secretly’?","o":["eloped","decompose","recline","knowingly"],"a":0,"en":"Eloped means to secretly run away with someone to get married, like the teenage couple who eloped to the U.S.A.","zh":"eloped（私奔）是指和某人一起偷偷跑去結婚，例如那對私奔到美國的青少年情侶。"},{"q":"Viewers of the T.V. show love her for her _____ and outspoken character. Which word completes the sentence?","o":["soprano","feisty","geode","lotion"],"a":1,"en":"Feisty describes someone brave and determined who isn't afraid to argue or stand up for themselves, like a character viewers love for being feisty and outspoken.","zh":"feisty（勇敢固執的／潑辣的）用來形容勇敢、堅定，不怕爭論或為自己辯護的人，例如觀眾喜愛她潑辣直率的個性。"},{"q":"Which word means ‘to be destroyed gradually after death by natural processes’?","o":["amplify","decompose","recycling","recline"],"a":1,"en":"Decompose means to be gradually broken down after death by natural processes, such as our bodies decomposing after we die.","zh":"decompose（分解／腐爛）是指死後透過自然過程逐漸被破壞分解，例如我們死後身體會逐漸分解。"},{"q":"You _____ your songs by using a speaker. Which word completes the sentence?","o":["eloped","feisty","amplify","geode"],"a":2,"en":"Amplify means to increase the strength of something, especially sound, like using a speaker to amplify songs.","zh":"amplify（放大／增強）是指增強某樣東西的強度，尤其是聲音，例如用擴音器放大歌聲。"},{"q":"Which word means ‘a singing voice with the highest range for a woman or boy’?","o":["soprano","decompose","lotion","knowingly"],"a":0,"en":"A soprano is a singer with the highest vocal range for a woman or boy, like the soprano who impressed everyone with her voice.","zh":"soprano（女高音）是指女性或男孩歌聲中音域最高的聲音，例如那位讓所有人印象深刻的女高音。"},{"q":"The naughty student _____ angered the teacher with his remarks. Which word completes the sentence?","o":["recycling","knowingly","recline","amplify"],"a":1,"en":"Knowingly means to do something on purpose, like a student who intentionally angered the teacher with his remarks.","zh":"knowingly（故意地／明知地）是指刻意做某件事，例如那位調皮的學生故意用言語惹怒老師。"},{"q":"Which word means ‘the process of treating used things so they can be used again’?","o":["geode","recycling","eloped","feisty"],"a":1,"en":"Recycling is the process of treating used materials so they can be used again, such as a school doing recycling every day after a certain period.","zh":"recycling（回收）是指把已使用過的東西重新處理、讓它們可以再被使用的過程，例如學校每天固定時段進行回收。"},{"q":"Some people like to collect rocks with _____ s. Which word completes the sentence?","o":["lotion","soprano","geode","decompose"],"a":2,"en":"A geode is a small hole in rock lined with crystals, or a rock containing one, like the rocks with geodes that some people collect.","zh":"geode（晶洞）是指岩石中帶有內壁結晶的小孔洞，或含有晶洞的岩石，例如有些人喜歡收集帶有晶洞的岩石。"},{"q":"Which word means ‘to sit or lie in a relaxed way, leaning backwards’?","o":["amplify","knowingly","recline","recycling"],"a":2,"en":"Recline means to sit or lie back in a relaxed position, like someone reclining on the sofa to watch TV.","zh":"recline（斜躺／向後靠）是指以放鬆的姿勢坐著或躺著、身體向後傾斜，例如躺在沙發上看電視。"},{"q":"Don't forget to cover yourself with suntan _____ or you will burn. Which word completes the sentence?","o":["geode","lotion","feisty","eloped"],"a":1,"en":"Lotion is a liquid used for cleaning, protecting, or treating the skin, like sunscreen lotion that prevents sunburn at the beach.","zh":"lotion（乳液／護膚乳）是用來清潔、保護或護理皮膚的液體，例如去海邊時用來防止曬傷的防曬乳。"}]};
+
+const QS = {};
+ORDER.forEach(s => {
+  QS[s] = RAW[s].map((r,i) => ({
+    id: s + '-' + (i+1), no: i+1, type:'mc', pts:1,
+    q: r.q, options: r.o, ans: r.a, en: r.en, why: r.zh
+  }));
+});
+
+/* lookups */
+const QBY = {};
+ORDER.forEach(s => QS[s].forEach(q => { QBY[q.id] = { q, sec: SEC[s] }; }));
+const ptsOf = qs => qs.reduce((a,q)=>a+q.pts,0);
+
+/* =====================================================================
+   HELPERS
+   ===================================================================== */
+const ptsFor = (q,status) => status==='right' ? q.pts : 0;
+const LETTERS = ['a','b','c','d'];
+const correctText = q => `${LETTERS[q.ans]}) ${q.options[q.ans]}`;
+const gradeOf = (score,total) => {
+  const p = score/total*100;
+  if(score===total) return { k:'S', name:'Sky Captain', zh:'天空船長', msg:'滿分！你已經掌握 Captain Arsenio 的精神：失敗，是成功的第一步。' };
+  if(p>=90) return { k:'A', name:'Ace Pilot', zh:'王牌飛行員', msg:'非常棒！只差一點點就滿分，翻一下錯題筆記，補上最後的小拼圖。' };
+  if(p>=80) return { k:'B', name:'Navigator', zh:'領航員', msg:'基礎很穩。把錯題筆記看過一遍，再挑戰一次，就有機會衝上 90 分。' };
+  if(p>=70) return { k:'C', name:'Cabin Crew', zh:'見習船員', msg:'已經及格，還有進步空間。先讀錯題筆記裡的解析，再重新挑戰。' };
+  return { k:'D', name:'Keep trying!', zh:'繼續嘗試', msg:'別氣餒！Captain Arsenio 也失敗過很多次。看看錯題筆記，再試一次。' };
+};
+const LS_NOTES = 'captain-arsenio:notes:v1', LS_BEST = 'captain-arsenio:best:v1';
+const load = (k,d) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch(e){ return d; } };
+const save = (k,v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} };
+
+/* =====================================================================
+   SMALL UI PIECES
+   ===================================================================== */
+const Btn = React.forwardRef(({kind='primary', className='', ...p}, ref) => {
+  const base = 'inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 font-semibold transition active:scale-[.98] disabled:opacity-40 ';
+  const k = kind==='primary' ? 'bg-primary text-primaryink hover:opacity-90'
+          : kind==='accent'  ? 'bg-accent text-accentink hover:opacity-90'
+          : 'border border-line bg-card text-ink hover:border-primary';
+  return <button ref={ref} {...p} className={base + k + ' ' + className} />;
+});
+const Chip = ({children, className=''}) =>
+  <span className={'inline-block rounded-md px-2 py-1 font-mono text-xs tracking-wide ' + className}>{children}</span>;
+
+/* Canary with its flying-machine wing — the story's Motocanary */
+const Canary = () => (
+  <svg viewBox="0 0 88 72" width="84" height="69" aria-hidden="true" className="flap">
+    <path d="M18 38 L3 30 L8 41 L3 52 L20 47 Z" fill="var(--accent-soft)" stroke="var(--ink)" strokeWidth="2.5" strokeLinejoin="round"/>
+    <circle cx="62" cy="28" r="13" fill="var(--accent)" stroke="var(--ink)" strokeWidth="2.5"/>
+    <ellipse cx="42" cy="42" rx="28" ry="20" fill="var(--accent)" stroke="var(--ink)" strokeWidth="2.5"/>
+    <circle cx="62" cy="28" r="11.2" fill="var(--accent)"/>
+    <path d="M75 25 L86 30 L75 34 Z" fill="#E8741E" stroke="var(--ink)" strokeWidth="2.2" strokeLinejoin="round"/>
+    <circle cx="65" cy="25" r="2.4" fill="var(--ink)"/>
+    <path d="M24 40 Q38 14 56 38 Q40 50 24 40 Z" fill="var(--primary-soft)" stroke="var(--ink)" strokeWidth="2.5" strokeLinejoin="round"/>
+    <path d="M32 38 Q40 28 49 37" fill="none" stroke="var(--primary)" strokeWidth="2.2" strokeLinecap="round"/>
+    <path d="M38 62 v6 M48 62 v6 M34 68 h8 M44 68 h8" stroke="var(--ink)" strokeWidth="2.5" strokeLinecap="round"/>
+  </svg>
+);
+
+/* Feedback panel under a checked question */
+function Feedback({q, s}) {
+  const ok = s.status==='right';
+  const tone = ok ? {box:'border-good bg-goodsoft', txt:'text-good', ic:'✓', t:'答對了！'}
+                  : {box:'border-bad bg-badsoft',  txt:'text-bad',  ic:'✕', t:'答錯了'};
+  return (
+    <div className="rise mt-5 flex flex-col gap-4">
+      <div className={'flex items-center gap-3 rounded-2xl border-2 px-4 py-3 ' + tone.box}>
+        <span className={'flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-card text-lg font-bold ' + tone.txt}>{tone.ic}</span>
+        <div className="min-w-0">
+          <div className={'font-display text-lg font-extrabold ' + tone.txt}>{tone.t}</div>
+          <div className="text-sm text-ink">得 {s.pts} / {q.pts} 分{!ok && <span>　正確答案：<b className="break-words">{correctText(q)}</b></span>}</div>
+        </div>
+      </div>
+
+      <div className="rounded-2xl border border-line bg-card p-4">
+        <div className="mb-1 font-mono text-xs tracking-wide text-muted">詳細解析</div>
+        <p className="text-ink leading-7">{q.why}</p>
+        <blockquote className="mt-3 rounded-lg bg-accentsoft px-3 py-2 text-sm text-accenttext">
+          <span className="mr-2 font-mono text-xs tracking-wide">English</span><span className="italic break-words">{q.en}</span>
+        </blockquote>
+      </div>
+    </div>
+  );
+}
+
+/* A saved or reviewed wrong answer */
+function NoteCard({q, sec, yours, count, onRemove}) {
+  return (
+    <div className="rounded-2xl border border-line bg-card p-4">
+      <div className="mb-2 flex flex-wrap items-center gap-2">
+        <Chip className="bg-primarysoft text-primary">{sec.code} · Q{q.no}</Chip>
+        {count>1 && <span className="text-xs text-muted">答錯 {count} 次</span>}
+      </div>
+      <p className="break-words font-medium leading-7">{q.q}</p>
+      {yours && <p className="mt-2 break-words text-sm"><span className="text-muted">你的答案：</span><span className="text-bad">{yours}</span></p>}
+      <p className="mt-1 break-words text-sm"><span className="text-muted">正確答案：</span><b className="text-good">{correctText(q)}</b></p>
+      <p className="mt-3 text-sm leading-6 text-ink">{q.why}</p>
+      <p className="mt-2 break-words rounded-lg bg-accentsoft px-3 py-2 text-xs italic text-accenttext">{q.en}</p>
+      {onRemove && <Btn kind="ghost" className="mt-3 !py-2 text-sm" onClick={onRemove}>已學會，從筆記移除</Btn>}
+    </div>
+  );
+}
+
+/* =====================================================================
+   PROGRESS BAR
+   ===================================================================== */
+function SegBar({parts, flat, st, idx}) {
+  const curId = flat[idx] && flat[idx].sec.id;
+  return (
+    <div className="flex gap-1.5" role="progressbar" aria-valuemin="0" aria-valuemax={flat.length}
+         aria-valuenow={flat.filter(x => st[x.q.id] && st[x.q.id].checked).length}>
+      {parts.map(p => {
+        const done = p.qs.filter(q => st[q.id] && st[q.id].checked).length;
+        const cur = curId === p.sec.id;
+        return (
+          <div key={p.sec.id} style={{flex: p.qs.length}} className="min-w-0">
+            <div className="h-2.5 overflow-hidden rounded-full bg-soft">
+              <div className="h-full rounded-full bg-accent transition-all duration-300" style={{width: (done/p.qs.length*100) + '%'}}/>
+            </div>
+            {parts.length>1 && <div className={'mt-1 truncate font-mono text-[10px] ' + (cur ? 'font-semibold text-ink' : 'text-muted')}>{p.sec.short}</div>}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/* =====================================================================
+   QUIZ RUNNER
+   ===================================================================== */
+function Quiz({session, onHome, onRecord, onFinish, onNotes}) {
+  const { parts, title } = session;
+  const flat = useMemo(() => parts.flatMap(p => p.qs.map(q => ({q, sec:p.sec}))), [parts]);
+  const [idx, setIdx] = useState(0);
+  const [st, setSt] = useState({});
+  const [fin, setFin] = useState(false);
+  const [leaving, setLeaving] = useState(false);
+  const nextRef = useRef(null);
+
+  const total = ptsOf(flat.map(x => x.q));
+  const score = flat.reduce((a,x) => a + ((st[x.q.id] && st[x.q.id].pts) || 0), 0);
+  const answered = flat.filter(x => st[x.q.id] && st[x.q.id].checked).length;
+  const cur = flat[idx]; const q = cur.q, sec = cur.sec, s = st[q.id] || {};
+
+  const patch = (id,o) => setSt(prev => ({...prev, [id]: {...(prev[id]||{}), ...o}}));
+  const pickMC = i => {
+    if(s.checked) return;
+    const status = i===q.ans ? 'right' : 'wrong';
+    patch(q.id, {checked:true, status, pts:ptsFor(q,status), value:q.options[i], pick:i});
+    onRecord(q, status, q.options[i]);
   };
-  var MODULE_ORDER = ["G1","G2","G3","V1","V2","V3","V4"];
-  var MODULE_GROUPS = [
-    { label:"閱讀理解 Reading Comprehension", tag:"READING", modules:["G1","G2","G3"] },
-    { label:"單字 Vocabulary", tag:"VOCAB", modules:["V1","V2","V3","V4"] }
-  ];
+  const next = () => { if(idx < flat.length-1) setIdx(idx+1); else { setFin(true); onFinish(session.key, score, total); } };
 
-  var Q = {};
+  useEffect(() => { try { window.scrollTo({top:0}); } catch(e){} }, [idx, fin]);
+  useEffect(() => {
+    if(!s.checked) return;
+    const t = setTimeout(() => { try { nextRef.current && nextRef.current.focus({preventScroll:true}); } catch(e){} }, 150);
+    return () => clearTimeout(t);
+  }, [s.checked, idx]);
 
-  Q.G1 = [
-    {q:"What does Captain Arsenio's description of the Motocanary experiment tell you about him?",
-     opts:["He is determined.","He is odd.","He doesn't know what he is doing.","He gives up easily."],
-     a:1,
-     exEn:"Captain Arsenio's detailed plan to train canaries to power a flying machine by pecking at seeds shows he has quite odd and unusual ideas that make him a rather eccentric character.",
-     exZh:"阿森尼奧船長訓練金絲雀啄食種子來驅動飛行機器的詳細計畫，顯示出他有相當古怪、不尋常的想法，使他成為一個頗為怪異（eccentric）的角色。"},
-    {q:"Why do you think the author chose to include diary entries with illustrations to show each step of the Motocanary experiment?",
-     opts:["To give a visual of the experiment.","To show how silly Captain Arsenio looks.","To explain the process.","To persuade the reader to try the experiment."],
-     a:0,
-     exEn:"The author included diary entries with illustrations to give a visual of the experiment because seeing drawings of each step helps readers better understand how Captain Arsenio put together and tested his Motocanary invention.",
-     exZh:"作者加入附插圖的日記內容，是為了讓讀者能「看見」這個實驗的畫面──透過每個步驟的插圖，讀者能更清楚理解阿森尼奧船長是如何組裝並測試他的「金絲雀動力機」發明的。"},
-    {q:"What lessons does Captain Arsenio learn during the experiment with the Motocanary?",
-     opts:["He loves birds.","He cannot fail.","He is a genius.","He needs better equipment."],
-     a:3,
-     exEn:"During his experiment with the Motocanary, Captain Arsenio realizes that his equipment is inadequate when things don't go as planned, teaching him that he needs better equipment to successfully achieve his flying goals.",
-     exZh:"在金絲雀動力機的實驗中，當事情不如預期發展時，阿森尼奧船長意識到自己的設備不足，這讓他學到：想要成功達成飛行的目標，他需要更好的設備。"},
-    {q:"Based on how he approaches his projects, what is one of Captain Arsenio's character traits?",
-     opts:["lazy","energetic","persistent","productive"],
-     a:2,
-     exEn:"Throughout the story, Captain Arsenio never gives up on his flying machine projects despite repeated failures, showing that he is truly persistent in pursuing his goals.",
-     exZh:"在整個故事中，儘管一再失敗，阿森尼奧船長從未放棄他的飛行機器計畫，這顯示出他在追求目標時真正具有「堅持不懈（persistent）」的特質。"},
-    {q:"What can we learn about Captain Arsenio from his flight diary?",
-     opts:["He is eccentric.","He is confident.","He is unintelligent.","He is irresponsible."],
-     a:1,
-     exEn:"Based on Captain Arsenio's flight diary entries, we can tell he is confident because he continues attempting bold flying experiments and documenting them, even when they don't work out perfectly.",
-     exZh:"從阿森尼奧船長的飛行日記內容可以看出，他是個有自信（confident）的人，因為即使實驗並未完美成功，他仍持續嘗試大膽的飛行實驗，並將過程記錄下來。"},
-    {q:"What does the phrase \u201cObvious results\u201d in paragraph 13 suggest about the narrator's point of view?",
-     opts:["The narrator thinks Captain Arsenio is a hard worker.","The narrator feels sorry for Captain Arsenio.","The narrator thinks Captain Arsenio did not think about his all parts of his invention.","The narrator is frustrated with Captain Arsenio."],
-     a:2,
-     exEn:"When the narrator says \u201cObvious results\u201d, they are implying that anyone could have predicted the crash, suggesting that Captain Arsenio did not think through all parts of his invention carefully before testing it.",
-     exZh:"當敘述者說出「顯而易見的結果（Obvious results）」時，暗示著任何人都能預料到這次墜毀的結果，這表示阿森尼奧船長在測試之前，並沒有把發明的每個部分都仔細思考清楚。"},
-    {q:"What does Captain Arsenio's third failure confirm about him?",
-     opts:["That he is not good at inventions.","That he is determined.","That he is close to getting his flying invention correct.","That he has given up."],
-     a:1,
-     exEn:"Despite failing twice before, Captain Arsenio tries a third time to make his flying invention work, which shows he is determined to achieve his goal and won't give up easily.",
-     exZh:"儘管先前已經失敗了兩次，阿森尼奧船長仍然第三次嘗試讓他的飛行發明成功運作，這顯示出他對達成目標相當堅定（determined），不會輕易放棄。"},
-    {q:"How do the diary images help make the story more entertaining?",
-     opts:["They give the reader directions.","They give the reader visuals to see what is happening.","They make the reader laugh.","They make the reader want to try an invention."],
-     a:1,
-     exEn:"In Captain Arsenio's story, the diary images act like a visual guide that helps readers better picture and understand what's happening in the story by showing visuals of events, characters, and inventions rather than just describing them with words.",
-     exZh:"在阿森尼奧船長的故事裡，日記中的插圖就像一份視覺指南，透過直接呈現事件、角色與發明的畫面（而不只是用文字描述），幫助讀者更容易想像並理解故事中發生的事情。"},
-    {q:"The main problem in the story is...",
-     opts:["Captain Arsenio gets stuck in a tree.","Captain Arsenio gives up.","Captain Arsenio's inventions are not working.","the birds caused a lot of problems."],
-     a:2,
-     exEn:"Throughout the story, we see that the main conflict centers around Captain Arsenio's inventions not working as planned, which leads to his various flying attempts failing and creates the central challenge he needs to overcome.",
-     exZh:"整個故事中，主要的衝突都圍繞在阿森尼奧船長的發明無法如預期運作，這導致他多次飛行嘗試失敗，也形成了他必須克服的核心難題。"},
-    {q:"What is the resolution in the story?",
-     opts:["There is no resolution.","Captain Arsenio's invention worked.","Captain Arsenio learns from his mistakes.","Captain Arsenio discovers he is not an inventor."],
-     a:2,
-     exEn:"The resolution shows how Captain Arsenio learns from his mistakes after his failed attempts at flying, demonstrating growth in his character rather than giving up on his dreams completely.",
-     exZh:"故事的結局呈現出阿森尼奧船長在多次飛行失敗後，從自己的錯誤中學習成長──這展現出他角色上的成長，而不是完全放棄自己的夢想。"},
-    {q:"Which of the following is NOT the setting of the story?",
-     opts:["1700s","Outside","The future"],
-     a:2,
-     exEn:"The story of Captain Arsenio takes place in the 1700s and is set outdoors, but the future is not one of the settings since it's a historical tale rather than a futuristic one.",
-     exZh:"阿森尼奧船長的故事發生在 1700 年代，場景多設定在戶外，但「未來」並不是這個故事的場景之一，因為這是一個歷史故事，而非未來科幻故事。"}
-  ];
+  /* ---------- results ---------- */
+  if(fin) {
+    const g = gradeOf(score,total);
+    const pct = Math.round(score/total*100);
+    const wrong = flat.filter(x => st[x.q.id] && st[x.q.id].status !== 'right');
+    return (
+      <div className="rise pb-10 pt-6">
+        <div className="blueprint rounded-3xl border border-line p-6 text-center">
+          <Chip className="bg-primarysoft text-primary">{title}</Chip>
+          <div className="mt-4 font-display text-7xl font-extrabold leading-none">{score}<span className="text-3xl text-muted"> / {total}</span></div>
+          <div className="mt-2 text-lg text-muted">{pct}%</div>
+          <div className="mx-auto mt-5 inline-flex items-center gap-3 rounded-2xl bg-accent px-5 py-3 text-accentink">
+            <span className="font-display text-3xl font-extrabold">{g.k}</span>
+            <span className="text-left leading-tight"><span className="block font-display text-lg font-extrabold">{g.name}</span><span className="text-sm font-medium">{g.zh}</span></span>
+          </div>
+          <p className="mx-auto mt-4 max-w-md text-ink">{g.msg}</p>
+          <div className="mx-auto mt-5 max-w-xl overflow-x-auto"><div className="grid grid-cols-5 gap-1 text-center font-mono text-[11px] text-muted" style={{minWidth:'420px'}}>
+            {[['100%',score===total],['99-90%',pct>=90&&score<total],['89-80%',pct>=80&&pct<90],['79-70%',pct>=70&&pct<80],['Below 69%',pct<70]].map(([l,on]) =>
+              <div key={l} className={'rounded-lg border px-1 py-1.5 ' + (on ? 'border-accent bg-accentsoft font-bold text-accenttext' : 'border-line bg-card')}>{l}</div>)}
+          </div></div>
+        </div>
 
-  Q.G2 = [
-    {q:"What is the genre of Captain Arsenio?",
-     opts:["Non-fiction","Science-Fiction","Folktale","Fantasy"],
-     a:3,
-     exEn:"This story belongs to the fantasy genre, following an eccentric captain who carries out a series of wildly imaginative flying experiments.",
-     exZh:"這部作品屬於奇幻文學（Fantasy），講述了一位古怪（eccentric）的船長進行各種異想天開飛行實驗的故事。"},
-    {q:"Captain Arsenio was very successful in all his other jobs. (cheese master, blacksmith, scuba instructor, ship captain)",
-     opts:["True","False"],
-     a:1,
-     exEn:"Captain Arsenio was actually not successful in his other jobs like cheese master, blacksmith, and scuba instructor, which is what led him to try being a ship captain!",
-     exZh:"事實上，阿森尼奧船長在起司師傅、鐵匠、潛水教練等其他工作上都不太成功，這也是他後來嘗試成為船長的原因！"},
-    {q:"How do we know about Captain Arsenio?",
-     opts:["His diary was found years ago.","He was in the newspaper.","People learned about him from TV.","He was famous for being a scuba diver."],
-     a:0,
-     exEn:"We know about Captain Arsenio because his diary was found years ago, which provided historians with a first-hand account of his life and adventures.",
-     exZh:"我們之所以認識阿森尼奧船長，是因為他的日記在多年後被人發現，這份日記為歷史學家提供了關於他生平與冒險經歷的第一手資料。"},
-    {q:"What did Captain Arsenio use in his first invention?",
-     opts:["cheese","canaries","springs","a rocket"],
-     a:1,
-     exEn:"In his first invention, the Motocanary, Captain Arsenio used canaries to power the flying machine by having them peck at seeds.",
-     exZh:"在他的第一個發明「金絲雀動力機（Motocanary）」中，他使用了金絲雀（canaries）啄食種子來提供動力。"},
-    {q:"Captain Arsenio's second flight invention relied heavily on...",
-     opts:["temperature","bounce","acceleration","weight"],
-     a:2,
-     exEn:"Captain Arsenio's second flying invention depended heavily on acceleration, requiring enough running speed to build up before the machine could attempt to lift off.",
-     exZh:"他的第二個飛行發明高度依賴「加速（acceleration）」，需要先累積足夠的奔跑速度，機器才能嘗試離地升空。"},
-    {q:"In his 3rd flight invention, what part did Captain Arsenio forget?",
-     opts:["How to make it bounce","How to make it fast","How to keep it in the air","How to use a spring"],
-     a:2,
-     exEn:"In his third flying invention, Captain Arsenio forgot to figure out how to keep the machine in the air once it had lifted off, which is why it ultimately failed.",
-     exZh:"在他的第三個飛行發明中，他忘記思考「如何讓機器保持在空中（How to keep it in the air）」，這也是這項發明最終失敗的原因。"},
-    {q:"What can you infer from step 7 on pg. 71?",
-     opts:["Captain Arsenio had a sick animal.","Captain Arsenio was unharmed.","Captain Arsenio was dead.","Captain Arsenio was injured."],
-     a:3,
-     exEn:"From step 7 on page 71, we can infer that Captain Arsenio was injured during his experiment, based on the details and illustrations describing what happened to him.",
-     exZh:"從第 71 頁第 7 步驟的描述與插圖可以推斷出，阿森尼奧船長在這次實驗中受傷了（injured）。"},
-    {q:"Why do some believe Captain Arsenio was successful in building his flight machine?",
-     opts:["His diary was found in Egypt.","His diary was found at the bottom of the sea.","His diary was found on the surface of the moon.","All of the above."],
-     a:1,
-     exEn:"Some believe Captain Arsenio succeeded because his diary was found at the bottom of the sea \u2014 suggesting he may have flown out over open water before it was lost, which some readers take as a sign that his final invention actually got off the ground.",
-     exZh:"有些人認為阿森尼奧船長最終成功了，是因為他的日記是在海底被發現的──這暗示他可能曾飛越海面，之後日記才沉落海中，部分讀者將此視為他的最後一項發明確實成功升空的證據。"},
-    {q:"What is the theme of this story?",
-     opts:["You have to be eccentric to invent something.","Never try too many new things.","Failing is sometimes the first step to success.","Flying is the most important thing in life."],
-     a:2,
-     exEn:"The central theme of the story is that failing is sometimes the first step to success \u2014 Captain Arsenio's repeated failures are part of the process that eventually moves him closer to achieving his goal.",
-     exZh:"故事的核心主題在於「失敗有時是邁向成功的第一步」──阿森尼奧船長一再的失敗，正是讓他逐漸邁向目標的過程中不可或缺的一部分。"},
-    {q:"Literary elements include:",
-     opts:["Characters","Setting","Events","All of the above"],
-     a:3,
-     exEn:"Literary elements are the building blocks that make up any story \u2014 this includes characters (who's in the story), setting (where and when it happens), and events (what takes place), which all work together to create a complete narrative.",
-     exZh:"文學要素是構成一個故事的基本元素，包括角色（故事裡有誰）、場景（故事發生的時間與地點），以及事件（故事中發生了什麼事）──這些要素共同組合，才能構成一個完整的故事。"}
-  ];
+        <div className="mt-5 rounded-2xl border border-line bg-card p-5">
+          <h2 className="font-display text-lg font-extrabold">各單元得分</h2>
+          <div className="mt-3 flex flex-col gap-3">
+            {parts.map(p => {
+              const got = p.qs.reduce((a,q) => a + ((st[q.id]&&st[q.id].pts)||0), 0), tot = ptsOf(p.qs);
+              return (<div key={p.sec.id}>
+                <div className="mb-1 flex items-baseline justify-between gap-3 text-sm">
+                  <span className="min-w-0 truncate"><b>{p.sec.code}</b> <span className="text-muted">{p.sec.zh}</span></span>
+                  <span className="font-mono font-semibold">{got}/{tot}</span>
+                </div>
+                <div className="h-2.5 overflow-hidden rounded-full bg-soft"><div className="h-full rounded-full bg-accent" style={{width:(got/tot*100)+'%'}}/></div>
+              </div>);
+            })}
+          </div>
+        </div>
 
-  Q.G3 = [
-    {q:"What is the main idea of the section titled \u201cThe End and the Beginning\u201d?",
-     opts:["Captain Arsenio always had easy jobs.","Captain Arsenio was bad at everything he tried.","Captain Arsenio had jobs most people would have enjoyed doing.","Captain Arsenio was not interested in most of the things he had tried."],
-     a:1,
-     exEn:"In the section \u201cThe End and the Beginning\u201d, we learn that Captain Arsenio was bad at everything he tried\u2014he kept failing at different jobs because he wasn't good at any of them, showing us why he had to keep starting over with new careers.",
-     exZh:"在「The End and the Beginning（終結與開始）」這個段落中，我們得知阿森尼奧船長幾乎每件事都做不好──他不斷在不同工作上失敗，因為他沒有一項真正擅長，這也說明了他為什麼必須一再從頭開始、嘗試新的職業。"},
-    {q:"Paragraph 4 says that Captain Arsenio showed determination during his flight experiments. What is the meaning of determination as it is used in paragraph 4?",
-     opts:["humor","gratitude","willpower","intelligence"],
-     a:2,
-     exEn:"In this context, willpower indicates Captain Arsenio's firm decision to keep trying and not give up, despite facing difficulties during his flight experiments\u2014it shows his strong mental strength to achieve his goal no matter what.",
-     exZh:"在這段文字中，「willpower（意志力）」指的是阿森尼奧船長即使在飛行實驗中遇到困難，仍堅定地持續嘗試、不輕言放棄的決心──這展現出他不計一切代價也要達成目標的強大意志力。"},
-    {q:"How does Captain Arsenio react to the challenges he faces?",
-     opts:["He gives up easily.","He keeps trying new things.","He blames everything on someone else.","He repeats what has worked for him in the past."],
-     a:1,
-     exEn:"Throughout the story, Captain Arsenio shows determination by trying new things when faced with problems\u2014whether it's testing different flying machines or coming up with creative solutions, he never sticks to just one approach.",
-     exZh:"在整個故事中，阿森尼奧船長面對問題時展現出堅持不懈的態度，總是願意嘗試新的方法──無論是測試不同的飛行機器，還是想出有創意的解決方案，他從不固守單一做法。"},
-    {q:"How do the entries from Captain Arsenio's flight diary compare with the other sections of the passage?",
-     opts:["They discuss the people who helped him build his machines.","They talk about where he learned to build flight machines.","They provide more detail about his experiments.","They explain why he stopped his experiments."],
-     a:2,
-     exEn:"Captain Arsenio's diary entries contain more detailed descriptions of his flight experiments compared to other parts of the passage, giving us a closer look at his actual attempts and experiences during his flying adventures.",
-     exZh:"相較於文章的其他部分，阿森尼奧船長的日記內容對他的飛行實驗有更詳細的描述，讓我們能更深入了解他在飛行冒險過程中實際的嘗試與經歷。"},
-    {q:"In paragraph 3 the narrator tells us that Captain Arsenio's jobs were the easiest but yet he was not good in any of them. What can we infer about him?",
-     opts:["He is a very intelligent individual.","He needs to work for NASA.","He is a rich man.","He is not a very successful individual."],
-     a:3,
-     exEn:"Since Captain Arsenio had the easiest jobs but still couldn't perform well in any of them, we can logically conclude that he is not a very successful individual\u2014someone who struggles even with simple tasks is unlikely to achieve much success.",
-     exZh:"既然阿森尼奧船長做的是最簡單的工作，卻仍然做不好，我們可以合理推論他並不是一個很成功的人──一個連簡單任務都難以勝任的人，通常也難以獲得太大的成就。"},
-    {q:"Why do you think the author used Captain Arsenio's journal entries in the story?",
-     opts:["He did not have enough words to complete the story.","He thought using them would be nice.","He is letting the reader know what Captain Arsenio is thinking.","He is letting the reader know what he sounds like."],
-     a:2,
-     exEn:"The author uses Captain Arsenio's journal entries to give us a peek inside his head and let us know his personal thoughts and feelings, which we wouldn't be able to learn just from watching his actions\u2014this is why he is letting the reader know what Captain Arsenio is thinking.",
-     exZh:"作者運用阿森尼奧船長的日記內容，讓讀者能一窺他內心的想法與感受──這些是單靠觀察他的行為無法得知的，因此作者藉此讓讀者了解阿森尼奧船長的內心想法。"},
-    {q:"In paragraph 11 the author says, \u201cThe acceleration of the runner would allow- according to his plans- the wings to beat up and down in imitation of a bird's flight and lift the machine off the ground.\u201d What does he mean by acceleration?",
-     opts:["The bird that is following him.","The wings beating up and down.","The act of running fast.","Lifting off the ground."],
-     a:2,
-     exEn:"In this context, acceleration refers to the act of running fast\u2014Captain Arsenio needed to run quickly to generate enough speed for the wings of his flying machine to flap and hopefully lift him off the ground, similar to how birds take flight.",
-     exZh:"在這段文字中，「acceleration（加速）」指的是快速奔跑的動作──阿森尼奧船長需要快速奔跑，才能產生足夠的速度讓飛行機器的翅膀拍動，進而希望能讓自己離地飛起，就像鳥類起飛的方式一樣。"},
-    {q:"In paragraph 13 the narrator states, \u201cObvious results\u201d, what does that suggest about Captain Arsenio's project number 3 \u201cCorkscrewpterus\u201d?",
-     opts:["The narrator thinks it will be successful.","The narrator thinks he is a very intelligent inventor.","The narrator wants to join him.","The narrator does not have much trust in his new invention."],
-     a:3,
-     exEn:"When the narrator says \u201cObvious results\u201d, they are using a sarcastic tone to imply that the project will clearly fail, showing their lack of trust in Captain Arsenio's new Corkscrewpterus invention.",
-     exZh:"當敘述者說出「顯而易見的結果（Obvious results）」時，語氣帶有諷刺意味，暗示這項計畫顯然會失敗，顯示出敘述者對阿森尼奧船長這項新發明「Corkscrewpterus」並不信任。"},
-    {q:"From Captain Arsenio's journal entry in paragraph 8, what word describes him the best?",
-     opts:["funny","imaginative","crazy","friendly"],
-     a:1,
-     exEn:"Based on paragraph 8 of Captain Arsenio's journal entry, he is best described as imaginative because he creatively describes his flying adventures and inventions with great detail and enthusiasm.",
-     exZh:"根據第 8 段阿森尼奧船長的日記內容，最適合形容他的詞是「imaginative（富有想像力）」，因為他以豐富的細節與熱情，創意十足地描述了自己的飛行冒險與發明。"},
-    {q:"What lesson does the author teach us using Captain Arsenio's misadventures?",
-     opts:["If at first you don't succeed keep trying.","If the birds don't help you fly use another item.","If nothing works use balloons.","If people laugh at you, just stop trying."],
-     a:0,
-     exEn:"Captain Arsenio never gave up despite his many failed flying attempts\u2014his perseverance teaches us that if at first you don't succeed keep trying, which is an important lesson about not letting failures discourage us from pursuing our dreams.",
-     exZh:"儘管多次飛行嘗試都失敗了，阿森尼奧船長從未放棄──他的堅持教會我們「如果一開始沒有成功，就要繼續嘗試」，這是一個重要的道理，提醒我們不要因為失敗而放棄追求夢想。"}
-  ];
+        <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+          <Btn kind="accent" className="flex-1" onClick={() => session.retry()}>重新挑戰</Btn>
+          <Btn kind="ghost" className="flex-1" onClick={onHome}>回首頁選單元</Btn>
+          <Btn kind="ghost" className="flex-1" onClick={onNotes}>全部錯題筆記</Btn>
+        </div>
 
-  Q.V1 = [
-    {q:"Which word means \u2018the desire to do something\u2019?",
-     opts:["impulse","contribution","circumstances","prototype"], a:0,
-     exEn:"An impulse is a sudden desire or urge to do something, such as the impulse to take every puppy in the pound.",
-     exZh:"impulse（衝動）是指想做某件事的慾望，例如想把收容所裡每隻小狗都帶走的衝動。"},
-    {q:"The nurse is _____ about her work in the hospital. Which word completes the sentence?",
-     opts:["eccentric","passionate","distinguished","evidently"], a:1,
-     exEn:"Passionate describes having strong emotions about something, so the nurse feels very strongly and enthusiastically about her work.",
-     exZh:"passionate（充滿熱情的）用來形容對某件事有強烈的情感，這句話是說護理師對她在醫院的工作充滿熱情。"},
-    {q:"Which word describes someone who is odd or strange?",
-     opts:["distinguished","conceived","eccentric","contribution"], a:2,
-     exEn:"Eccentric describes someone who is odd or strange, like an inventor who is always working on crazy projects.",
-     exZh:"eccentric（古怪的）用來形容行為奇特、不尋常的人，就像那位總是在做瘋狂計畫的古怪發明家。"},
-    {q:"We built a _____ to show what the real robot would look like. Which word completes the sentence?",
-     opts:["impulse","acceleration","prototype","circumstances"], a:2,
-     exEn:"A prototype is a model created to test an idea before making the final version, like a model built to show what a real robot would look like.",
-     exZh:"prototype（原型／樣品）是指在製作最終成品前，先做出來測試的模型，例如先做出一個模型來展示真正的機器人會是什麼樣子。"},
-    {q:"Which word means \u2018the act of moving faster\u2019?",
-     opts:["circumstances","acceleration","contribution","passionate"], a:1,
-     exEn:"Acceleration is the act of speeding up, such as a car accelerating around a curve and running off the road.",
-     exZh:"acceleration（加速）是指移動速度變快的動作，例如車子在轉彎處加速而衝出路面。"},
-    {q:"The _____ inventor won an award for excellence in airplane design. Which word completes the sentence?",
-     opts:["eccentric","distinguished","conceived","evidently"], a:1,
-     exEn:"Distinguished describes a person or group known and respected for excellence, like an inventor who won an award for outstanding airplane design.",
-     exZh:"distinguished（傑出的）用來形容因優異表現而受到肯定與尊敬的人或群體，例如因飛機設計卓越而獲獎的發明家。"},
-    {q:"Which word means \u2018if something happened for an obvious reason\u2019?",
-     opts:["evidently","impulse","prototype","contribution"], a:0,
-     exEn:"Evidently is used when something happens for a clear, obvious reason, such as schools evidently having rules about cell phones because students must focus on studying.",
-     exZh:"evidently（顯然地）用來表示某件事發生有明顯的原因，例如學校顯然也有關於課堂上使用手機的規定，因為學生必須專心學習。"},
-    {q:"The clever student _____ an idea for a safer bicycle helmet. Which word completes the sentence?",
-     opts:["contribution","circumstances","conceived","distinguished"], a:2,
-     exEn:"Conceived means to have thought of the idea to create something, such as the student coming up with the idea for a safer bicycle helmet.",
-     exZh:"conceived（構想出）是指想出要創造某樣東西的點子，例如這位聰明的學生構想出一個更安全自行車安全帽的點子。"},
-    {q:"Which word means \u2018something that helps make something else happen or succeed\u2019?",
-     opts:["acceleration","eccentric","contribution","evidently"], a:2,
-     exEn:"A contribution is something a person adds that helps a larger effort, like the airplane being an important contribution to long-distance travel.",
-     exZh:"contribution（貢獻）是指某人所做出、對更大的事情有幫助的付出，例如飛機的發明對長途旅行來說是重要的貢獻。"},
-    {q:"Because of the _____ the picnic was cancelled. Which word completes the sentence?",
-     opts:["circumstances","passionate","prototype","conceived"], a:0,
-     exEn:"Circumstances refers to the way an event happened or the causes behind it, such as the reasons that led to the picnic being cancelled.",
-     exZh:"circumstances（情況／狀況）是指某件事發生的方式或原因，例如導致野餐被取消的那些原因。"}
-  ];
-
-  Q.V2 = [
-    {q:"Which word describes controls that work without a person operating them?",
-     opts:["automatic","irregular","illogical","biography"], a:0,
-     exEn:"Automatic describes something with controls that work on their own without a person operating them, like automatic doors in shops.",
-     exZh:"automatic（自動的）用來形容不需要人操作就能運作的控制裝置，例如商店裡的自動門。"},
-    {q:"The _____ industry provides many jobs in America. Which word completes the sentence?",
-     opts:["biology","automobile","illness","irrelevant"], a:1,
-     exEn:"An automobile is a car, and the sentence describes how the car industry provides many jobs in America.",
-     exZh:"automobile（汽車）是指車子，這句話是在說汽車產業在美國提供了許多工作機會。"},
-    {q:"Which word means \u2018the scientific study of the life and structure of plants and animals\u2019?",
-     opts:["biography","biology","irregular","illegal"], a:1,
-     exEn:"Biology is the scientific study of living things, such as studying the biology of animals in science class.",
-     exZh:"biology（生物學）是研究動植物生命與構造的科學，例如在自然課研究動物的生物學。"},
-    {q:"I read a great _____ about Edison last week. Which word completes the sentence?",
-     opts:["automatic","illness","biography","irresponsible"], a:2,
-     exEn:"A biography is the story of a person's life written by someone else, like a book about Edison's life.",
-     exZh:"biography（傳記）是由他人撰寫、記述某人生平的故事，例如一本關於愛迪生生平的書。"},
-    {q:"Which word means \u2018not arranged in an even way or without a smooth pattern\u2019?",
-     opts:["illegal","irregular","biology","automatic"], a:1,
-     exEn:"Irregular describes something without an even, smooth pattern, such as irregular meals combined with insufficient sleep.",
-     exZh:"irregular（不規則的）用來形容排列不均勻、沒有平滑固定模式的事物，例如不規律的飲食加上睡眠不足。"},
-    {q:"The _____ driver drove too fast around the corner and hit a tree. Which word completes the sentence?",
-     opts:["distinguished","irresponsible","illogical","biography"], a:1,
-     exEn:"Irresponsible describes someone who doesn't think enough about the effects of their actions, like a driver who drove too fast and crashed.",
-     exZh:"irresponsible（不負責任的）用來形容沒有充分考慮自己行為後果的人，例如開太快而撞車的駕駛。"},
-    {q:"Which word means \u2018not important to or connected with a situation\u2019?",
-     opts:["irrelevant","automobile","illness","irregular"], a:0,
-     exEn:"Irrelevant describes something that is not connected to or important for a situation, such as remarks that have nothing to do with the topic being studied.",
-     exZh:"irrelevant（不相關的）用來形容與某情況無關或不重要的事物，例如與正在學習的主題無關的發言。"},
-    {q:"I had an _____ and needed to see the doctor. Which word completes the sentence?",
-     opts:["illegal","illness","illogical","biology"], a:1,
-     exEn:"Illness is the state of being physically or mentally sick, which is why a doctor's visit was needed.",
-     exZh:"illness（疾病）是指身體或精神上生病的狀態，所以才需要去看醫生。"},
-    {q:"Which word means \u2018not allowed by the law\u2019?",
-     opts:["illegal","irrelevant","automatic","biography"], a:0,
-     exEn:"Illegal describes something not allowed by law, such as driving a car before becoming an adult.",
-     exZh:"illegal（違法的）用來形容法律不允許的事，例如未成年就開車。"},
-    {q:"She has an _____ fear of insects. Which word completes the sentence?",
-     opts:["irregular","illness","illogical","irresponsible"], a:2,
-     exEn:"Illogical describes something not sensible or well thought out, such as an unreasonable fear of insects.",
-     exZh:"illogical（不合邏輯的）用來形容不明智或未經邏輯思考的事，例如對昆蟲不合理的恐懼。"}
-  ];
-
-  Q.V3 = [
-    {q:"Which word means \u2018measuring a long distance from the bottom to the top\u2019?",
-     opts:["high","slow","fine","foal"], a:0,
-     exEn:"High describes something that measures a long distance from bottom to top, like a wall that goes all the way around a house.",
-     exZh:"high（高的）用來形容從底部到頂部距離很長的事物，例如一道圍繞房子四周的高牆。"},
-    {q:"The _____ suddenly went dark and it started to rain. Which word completes the sentence?",
-     opts:["pine","sky","snow","stroll"], a:1,
-     exEn:"Sky is the space above the earth that you see when you look up, and the sentence describes it suddenly going dark before the rain.",
-     exZh:"sky（天空）是指抬頭能看見的地球上方空間，這句話描述天空突然變暗、接著開始下雨。"},
-    {q:"Which word means \u2018an evergreen forest tree with needle-like leaves\u2019?",
-     opts:["foal","pine","throw","go"], a:1,
-     exEn:"A pine is an evergreen tree with leaves shaped like needles.",
-     exZh:"pine（松樹）是一種葉子像針一樣的常綠森林樹木。"},
-    {q:"\u201cHow's your throat?\u201d \u201cIt's _____ as long as I don't cough.\u201d Which word completes the sentence?",
-     opts:["high","slow","fine","snow"], a:2,
-     exEn:"Fine means very well, so the person is saying their throat feels okay unless they cough.",
-     exZh:"fine（很好的）表示狀態良好，這句話是在說只要不咳嗽，喉嚨就還好。"},
-    {q:"Which word means \u2018not moving, acting, or done quickly; taking a long time\u2019?",
-     opts:["slow","throw","stroll","sky"], a:0,
-     exEn:"Slow describes something that is not quick or takes a long time, such as progress that was slower than expected.",
-     exZh:"slow（緩慢的）用來形容不快速、花費較長時間的事，例如比預期更慢的進步。"},
-    {q:"People were _____ ing along the beach. Which word completes the sentence?",
-     opts:["pine","stroll","foal","go"], a:1,
-     exEn:"Stroll means to walk somewhere in a slow, relaxed way, like people walking leisurely along the beach.",
-     exZh:"stroll（散步）是指以緩慢輕鬆的方式走路，例如人們沿著海灘悠閒散步。"},
-    {q:"Which word means \u2018to send something through the air by moving your hand or arm quickly\u2019?",
-     opts:["throw","fine","high","snow"], a:0,
-     exEn:"Throw means to send something through the air with a quick motion of the hand or arm, such as in a competition to see who can throw the farthest.",
-     exZh:"throw（投擲）是指用手或手臂快速移動，把東西送到空中，例如比賽看誰能丟得最遠。"},
-    {q:"The _____ ran across the field with its mother. Which word completes the sentence?",
-     opts:["sky","slow","foal","stroll"], a:2,
-     exEn:"A foal is a very young horse or donkey, like the one running across the field with its mother.",
-     exZh:"foal（小馬／幼駒）是指非常年幼的馬或驢，例如跟著媽媽一起跑過原野的小馬。"},
-    {q:"Which word means \u2018small soft white flakes of frozen water that fall from the sky in cold weather\u2019?",
-     opts:["pine","snow","high","throw"], a:1,
-     exEn:"Snow refers to soft white frozen flakes that fall from the sky in cold weather, like the heavy snow expected tomorrow.",
-     exZh:"snow（雪）是指在寒冷天氣中從天空落下的柔軟白色凍結水片，例如明天預計會下的大雪。"},
-    {q:"\u201cWhere will you _____ this evening?\u201d \u201cI think I'll _____ and see a movie.\u201d Which word completes the sentence?",
-     opts:["go","fine","foal","sky"], a:0,
-     exEn:"Go means to move somewhere, such as going to see a movie this evening.",
-     exZh:"go（去；前往）是指移動到某處，例如今晚要去看場電影。"}
-  ];
-
-  Q.V4 = [
-    {q:"Which word means \u2018to run away with somebody in order to marry them secretly\u2019?",
-     opts:["eloped","decompose","recline","knowingly"], a:0,
-     exEn:"Eloped means to secretly run away with someone to get married, like the teenage couple who eloped to the U.S.A.",
-     exZh:"eloped（私奔）是指和某人一起偷偷跑去結婚，例如那對私奔到美國的青少年情侶。"},
-    {q:"Viewers of the T.V. show love her for her _____ and outspoken character. Which word completes the sentence?",
-     opts:["soprano","feisty","geode","lotion"], a:1,
-     exEn:"Feisty describes someone brave and determined who isn't afraid to argue or stand up for themselves, like a character viewers love for being feisty and outspoken.",
-     exZh:"feisty（勇敢固執的／潑辣的）用來形容勇敢、堅定，不怕爭論或為自己辯護的人，例如觀眾喜愛她潑辣直率的個性。"},
-    {q:"Which word means \u2018to be destroyed gradually after death by natural processes\u2019?",
-     opts:["amplify","decompose","recycling","recline"], a:1,
-     exEn:"Decompose means to be gradually broken down after death by natural processes, such as our bodies decomposing after we die.",
-     exZh:"decompose（分解／腐爛）是指死後透過自然過程逐漸被破壞分解，例如我們死後身體會逐漸分解。"},
-    {q:"You _____ your songs by using a speaker. Which word completes the sentence?",
-     opts:["eloped","feisty","amplify","geode"], a:2,
-     exEn:"Amplify means to increase the strength of something, especially sound, like using a speaker to amplify songs.",
-     exZh:"amplify（放大／增強）是指增強某樣東西的強度，尤其是聲音，例如用擴音器放大歌聲。"},
-    {q:"Which word means \u2018a singing voice with the highest range for a woman or boy\u2019?",
-     opts:["soprano","decompose","lotion","knowingly"], a:0,
-     exEn:"A soprano is a singer with the highest vocal range for a woman or boy, like the soprano who impressed everyone with her voice.",
-     exZh:"soprano（女高音）是指女性或男孩歌聲中音域最高的聲音，例如那位讓所有人印象深刻的女高音。"},
-    {q:"The naughty student _____ angered the teacher with his remarks. Which word completes the sentence?",
-     opts:["recycling","knowingly","recline","amplify"], a:1,
-     exEn:"Knowingly means to do something on purpose, like a student who intentionally angered the teacher with his remarks.",
-     exZh:"knowingly（故意地／明知地）是指刻意做某件事，例如那位調皮的學生故意用言語惹怒老師。"},
-    {q:"Which word means \u2018the process of treating used things so they can be used again\u2019?",
-     opts:["geode","recycling","eloped","feisty"], a:1,
-     exEn:"Recycling is the process of treating used materials so they can be used again, such as a school doing recycling every day after a certain period.",
-     exZh:"recycling（回收）是指把已使用過的東西重新處理、讓它們可以再被使用的過程，例如學校每天固定時段進行回收。"},
-    {q:"Some people like to collect rocks with _____ s. Which word completes the sentence?",
-     opts:["lotion","soprano","geode","decompose"], a:2,
-     exEn:"A geode is a small hole in rock lined with crystals, or a rock containing one, like the rocks with geodes that some people collect.",
-     exZh:"geode（晶洞）是指岩石中帶有內壁結晶的小孔洞，或含有晶洞的岩石，例如有些人喜歡收集帶有晶洞的岩石。"},
-    {q:"Which word means \u2018to sit or lie in a relaxed way, leaning backwards\u2019?",
-     opts:["amplify","knowingly","recline","recycling"], a:2,
-     exEn:"Recline means to sit or lie back in a relaxed position, like someone reclining on the sofa to watch TV.",
-     exZh:"recline（斜躺／向後靠）是指以放鬆的姿勢坐著或躺著、身體向後傾斜，例如躺在沙發上看電視。"},
-    {q:"Don't forget to cover yourself with suntan _____ or you will burn. Which word completes the sentence?",
-     opts:["geode","lotion","feisty","eloped"], a:1,
-     exEn:"Lotion is a liquid used for cleaning, protecting, or treating the skin, like sunscreen lotion that prevents sunburn at the beach.",
-     exZh:"lotion（乳液／護膚乳）是用來清潔、保護或護理皮膚的液體，例如去海邊時用來防止曬傷的防曬乳。"}
-  ];
-
-  /* ============ STORAGE ============ */
-  var STORAGE_KEY = "arsenio_quiz_v1";
-  function loadState(){
-    try{ var raw = localStorage.getItem(STORAGE_KEY); if(raw) return JSON.parse(raw); }catch(e){}
-    return {};
-  }
-  function saveState(){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(progress)); }catch(e){} }
-  var progress = loadState();
-  MODULE_ORDER.forEach(function(m){
-    if(!progress[m] || progress[m].length !== Q[m].length){
-      progress[m] = Q[m].map(function(){ return {sel:null, correct:null}; });
-    }
-  });
-
-  var view = "home";
-  var curModule = null;
-  var curIndex = 0;
-  var summaryFrom = false;
-
-  var appEl = document.getElementById("app");
-
-  function moduleScore(m){
-    var arr = progress[m];
-    var answered = arr.filter(function(r){ return r.sel !== null; }).length;
-    var correct = arr.filter(function(r){ return r.correct === true; }).length;
-    return { answered: answered, correct: correct, total: arr.length };
-  }
-  function esc(s){ return String(s).replace(/[&<>]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;"}[c]; }); }
-
-  function renderHome(){
-    var totalCorrect = 0, totalAnswered = 0, totalAll = 0, allDone = true;
-    MODULE_ORDER.forEach(function(m){
-      var s = moduleScore(m);
-      totalCorrect += s.correct; totalAnswered += s.answered; totalAll += s.total;
-      if(s.answered < s.total) allDone = false;
-    });
-    var overallHtml = "";
-    if(totalAnswered > 0){
-      overallHtml = '<div class="overall">已作答 <b>' + totalAnswered + '</b> / ' + totalAll + ' 題' +
-        (allDone ? '\u3000\u00b7\u3000總分 <b>' + totalCorrect + '</b> / ' + totalAll : '') + '</div>';
-    }
-    function cardFor(m){
-      var meta = MODULES[m];
-      var s = moduleScore(m);
-      var pct = s.total ? Math.round((s.answered/s.total)*100) : 0;
-      var statusText = s.answered === 0 ? "尚未開始" :
-        (s.answered < s.total ? ("進行中 " + s.answered + "/" + s.total) : ("完成 \u00b7 " + s.correct + "/" + s.total + " 分"));
-      return '' +
-      '<button class="module-card" data-module="' + m + '">' +
-        '<div class="icon">' + meta.icon + '</div>' +
-        '<div class="body">' +
-          '<h3>' + esc(meta.title) + '</h3>' +
-          '<div class="desc">' + esc(meta.desc) + '（' + s.total + ' 題）</div>' +
-          '<div class="progress-bar-mini"><div style="width:' + pct + '%"></div></div>' +
-          '<div class="status"><span>' + esc(statusText) + '</span>' +
-            (s.answered === s.total && s.total>0 ? '<span class="badge-score">' + s.correct + '/' + s.total + '</span>' : '') +
-          '</div>' +
-        '</div>' +
-      '</button>';
-    }
-    var sectionsHtml = MODULE_GROUPS.map(function(g){
-      return '<div class="part-heading"><span class="tag">' + esc(g.tag) + '</span><h2 style="font-size:16px;margin:0;">' + esc(g.label) + '</h2></div>' +
-        '<div class="module-grid">' + g.modules.map(cardFor).join("") + '</div>';
-    }).join("");
-
-    appEl.innerHTML =
-      '<div class="topbar"><div class="mark">\u2708\ufe0f</div><div>' +
-        '<h1>Captain Arsenio</h1>' +
-        '<div class="sub">閱讀理解互動測驗</div>' +
-      '</div></div>' +
-      '<div class="hero">' +
-        '<h2 style="font-size:17px;margin-bottom:6px;">選一組測驗開始作答</h2>' +
-        '<p>每組約 10 題，答完立刻顯示對錯，並附中英雙語解析。可以分批完成，進度會自動保留。</p>' +
-        overallHtml +
-      '</div>' +
-      sectionsHtml +
-      '<footer class="note">根據提供的 Captain Arsenio 閱讀測驗與單字題庫整理製作，僅供學習使用。</footer>';
-
-    Array.prototype.forEach.call(appEl.querySelectorAll(".module-card"), function(btn){
-      btn.addEventListener("click", function(){
-        curModule = btn.getAttribute("data-module");
-        var arr = progress[curModule];
-        var firstUnanswered = arr.findIndex(function(r){ return r.sel === null; });
-        if(firstUnanswered === -1){ view = "summary"; }
-        else { curIndex = firstUnanswered; view = "quiz"; }
-        render();
-      });
-    });
+        <h2 className="mt-9 font-display text-xl font-extrabold">本次錯題筆記 <span className="text-base font-semibold text-muted">（{wrong.length} 題）</span></h2>
+        {wrong.length===0
+          ? <p className="mt-3 rounded-2xl border border-good bg-goodsoft p-4 text-good">這次沒有錯題，太厲害了！</p>
+          : <div className="mt-3 flex flex-col gap-3">{wrong.map(x => <NoteCard key={x.q.id} q={x.q} sec={x.sec} yours={st[x.q.id].value}/>)}</div>}
+      </div>
+    );
   }
 
-  function renderQuiz(){
-    var list = Q[curModule];
-    var item = list[curIndex];
-    var rec = progress[curModule][curIndex];
-    var answered = rec.sel !== null;
-    var total = list.length;
-    var pct = Math.round(((curIndex+1)/total)*100);
+  /* ---------- question screen ---------- */
+  return (
+    <div className="pb-10">
+      <header className="sticky z-20 bg-bg pb-3 pt-3" style={{top:'env(safe-area-inset-top,0px)'}}>
+        <div className="flex items-center justify-between gap-3">
+          <button onClick={() => setLeaving(true)} className="rounded-lg px-2 py-1 text-sm font-semibold text-muted hover:text-ink">← 離開</button>
+          <div className="min-w-0 flex-1 truncate text-center font-display font-extrabold">{title}</div>
+          <div className="font-mono text-sm"><b>{score}</b><span className="text-muted">/{total}</span></div>
+        </div>
+        <div className="mt-3"><SegBar parts={parts} flat={flat} st={st} idx={idx}/></div>
+        <div className="mt-1 flex justify-between text-xs text-muted"><span>第 {idx+1} / {flat.length} 題</span><span>已作答 {answered} 題</span></div>
+      </header>
 
-    var optionsHtml = item.opts.map(function(opt, idx){
-      var cls = "option-btn";
-      if(answered){
-        cls += " disabled";
-        if(idx === item.a) cls += " correct";
-        else if(idx === rec.sel) cls += " wrong";
-        else cls += " dim";
-      }
-      var letter = String.fromCharCode(65+idx);
-      return '<button class="' + cls + '" data-idx="' + idx + '">' +
-        '<span class="letter">' + letter + '</span><span>' + esc(opt) + '</span>' +
-      '</button>';
-    }).join("");
+      {leaving && (
+        <div className="rise mb-3 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-bad bg-badsoft p-3 text-sm">
+          <span className="text-ink">確定要離開嗎？目前的作答進度不會保留。</span>
+          <span className="flex gap-2"><Btn kind="ghost" className="!px-3 !py-1.5 text-sm" onClick={() => setLeaving(false)}>繼續作答</Btn><Btn className="!px-3 !py-1.5 text-sm" onClick={onHome}>離開</Btn></span>
+        </div>
+      )}
 
-    var feedbackHtml = "";
-    if(answered){
-      var isCorrect = rec.correct;
-      feedbackHtml = '<div class="feedback ' + (isCorrect ? "correct" : "wrong") + '">' +
-        '<div class="verdict">' + (isCorrect ? "\u2705 答對了！" : "\u274c 答錯了，正確答案是「" + esc(item.opts[item.a]) + "」") + '</div>' +
-        '<div class="explain-en">' + esc(item.exEn) + '</div>' +
-        '<div class="explain-zh">' + esc(item.exZh) + '</div>' +
-      '</div>';
-    }
+      <div key={q.id} className="rise rounded-3xl border border-line bg-card p-5 sm:p-7">
+        <div className="mb-4 flex flex-wrap items-center gap-2">
+          <Chip className="bg-primarysoft text-primary">{sec.code}</Chip>
+          <span className="text-sm font-semibold">{sec.zh}</span>
+          <span className="text-sm text-muted">· Q{q.no} · {q.pts} 分</span>
+        </div>
+        <p className="mb-4 text-sm italic text-muted">{sec.dir}</p>
 
-    var isLast = curIndex === total - 1;
-    var nextLabel = summaryFrom ? "返回總覽" : (isLast ? "完成本組 \u2192" : "下一題 \u2192");
+        <p className="text-xl font-medium leading-snug break-words">{q.q}</p>
 
-    appEl.innerHTML =
-      '<div class="quiz-header">' +
-        '<button class="back-link" id="btnBack">\u2190 ' + (summaryFrom ? "返回總覽" : "回首頁") + '</button>' +
-        '<div class="progress-track"><div style="width:' + pct + '%"></div></div>' +
-        '<div class="qcount">第 ' + (curIndex+1) + ' / ' + total + ' 題</div>' +
-      '</div>' +
-      '<div class="card">' +
-        '<div class="prompt">' + esc(item.q) + '</div>' +
-        '<div class="options">' + optionsHtml + '</div>' +
-        feedbackHtml +
-      '</div>' +
-      '<div class="nav-row">' +
-        '<button class="btn" id="btnPrev" ' + (curIndex===0 ? "disabled" : "") + '>\u2190 上一題</button>' +
-        '<button class="btn primary" id="btnNext" ' + (!answered ? "disabled" : "") + '>' + nextLabel + '</button>' +
-      '</div>';
+        <div className="mt-5 flex flex-col gap-2.5">
+          {q.options.map((o,i) => {
+            const picked = s.pick===i, isAns = i===q.ans;
+            let cls = 'border-line bg-card hover:border-primary';
+            if(s.checked) cls = isAns ? 'border-good bg-goodsoft' : picked ? 'border-bad bg-badsoft' : 'border-line bg-card opacity-60';
+            return (
+              <button key={i} onClick={() => pickMC(i)} aria-pressed={picked}
+                className={'flex w-full items-start gap-3 rounded-xl border-2 px-4 py-3 text-left transition ' + cls}>
+                <span className={'mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border font-mono text-sm font-semibold ' + (s.checked && isAns ? 'border-good bg-good text-card' : s.checked && picked ? 'border-bad bg-bad text-card' : 'border-line')}>{LETTERS[i]}</span>
+                <span className="min-w-0 flex-1 break-words leading-snug">{o}</span>
+                {s.checked && isAns && <span className="font-bold text-good">✓</span>}
+                {s.checked && picked && !isAns && <span className="font-bold text-bad">✕</span>}
+              </button>
+            );
+          })}
+        </div>
 
-    appEl.querySelector("#btnBack").addEventListener("click", function(){
-      view = summaryFrom ? "summary" : "home";
-      summaryFrom = false;
-      render();
-    });
-    appEl.querySelector("#btnPrev").addEventListener("click", function(){
-      if(curIndex > 0){ curIndex -= 1; render(); }
-    });
-    appEl.querySelector("#btnNext").addEventListener("click", function(){
-      if(summaryFrom){ view = "summary"; summaryFrom = false; render(); return; }
-      if(isLast){ view = "summary"; render(); return; }
-      curIndex += 1; render();
-    });
+        {s.checked && <Feedback q={q} s={s}/>}
+      </div>
 
-    if(!answered){
-      Array.prototype.forEach.call(appEl.querySelectorAll(".option-btn"), function(btn){
-        btn.addEventListener("click", function(){
-          var idx = parseInt(btn.getAttribute("data-idx"), 10);
-          rec.sel = idx;
-          rec.correct = (idx === item.a);
-          saveState();
-          render();
-        });
-      });
-    }
-  }
+      <div className="mt-5 flex items-center justify-between gap-3">
+        <Btn kind="ghost" onClick={() => setIdx(idx-1)} disabled={idx===0}>← 上一題</Btn>
+        {s.checked
+          ? <Btn kind="accent" onClick={next} ref={nextRef}>{idx<flat.length-1 ? '下一題 →' : '完成，查看成績'}</Btn>
+          : <span className="text-sm text-muted">點選一個選項，馬上看結果</span>}
+      </div>
+    </div>
+  );
+}
 
-  function renderSummary(){
-    var list = Q[curModule];
-    var arr = progress[curModule];
-    var correct = arr.filter(function(r){ return r.correct === true; }).length;
-    var total = list.length;
-    var pct = Math.round((correct/total)*100);
+/* =====================================================================
+   HOME, NOTEBOOK, APP
+   ===================================================================== */
+function UnitCard({sec, best, onStart}) {
+  const qs = QS[sec.id], b = best[sec.id];
+  return (
+    <button onClick={onStart} className="flex flex-col gap-3 rounded-2xl border border-line bg-card p-4 text-left transition hover:border-primary active:scale-[.99]">
+      <div className="flex items-center justify-between gap-2">
+        <Chip className="bg-primarysoft text-primary">{sec.code}</Chip>
+        <span className="text-xs text-muted">{sec.tag}</span>
+      </div>
+      <div>
+        <div className="font-display text-lg font-extrabold leading-snug">{sec.en}</div>
+        <div className="text-sm text-muted">{sec.zh}</div>
+      </div>
+      <div className="mt-auto flex items-center justify-between text-sm">
+        <span className="text-muted">{qs.length} 題 · {ptsOf(qs)} 分</span>
+        {b ? <span className="font-semibold text-good">最佳 {b.score}/{b.total}</span> : <span className="text-muted">尚未挑戰</span>}
+      </div>
+    </button>
+  );
+}
 
-    var rowsHtml = list.map(function(item, idx){
-      var rec = arr[idx];
-      var isWrong = rec.sel !== null && !rec.correct;
-      var isUnanswered = rec.sel === null;
-      var icon = isUnanswered ? "\u2b1c" : (rec.correct ? "\u2705" : "\u274c");
-      return '<button class="qrow ' + (isWrong ? "wrong" : "") + '" data-idx="' + idx + '">' +
-        '<span class="num">' + (idx+1) + '</span>' +
-        '<span class="qtext">' + esc(item.q) + '</span>' +
-        '<span class="icon">' + icon + '</span>' +
-      '</button>';
-    }).join("");
+function FullCard({tag, title, desc, qs, best, onStart}) {
+  return (
+    <section className="rounded-3xl border-2 border-accent bg-card p-5 sm:p-6">
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="min-w-0">
+          <Chip className="bg-accentsoft text-accenttext">{tag}</Chip>
+          <h2 className="mt-2 font-display text-2xl font-extrabold">{title}</h2>
+          <p className="mt-1 text-sm text-muted">{desc} · {qs.length} 題 · 共 {ptsOf(qs)} 分</p>
+          {best && <p className="mt-1 text-sm font-semibold text-good">最佳成績 {best.score}/{best.total}</p>}
+        </div>
+        <Btn kind="accent" onClick={onStart}>開始挑戰</Btn>
+      </div>
+    </section>
+  );
+}
 
-    appEl.innerHTML =
-      '<div class="quiz-header">' +
-        '<button class="back-link" id="btnBack">\u2190 回首頁</button>' +
-        '<div class="qcount">' + esc(MODULES[curModule].title) + '</div>' +
-      '</div>' +
-      '<div class="score-banner">' +
-        '<div class="big">' + correct + ' / ' + total + '</div>' +
-        '<div class="pct">答對率 ' + pct + '%</div>' +
-      '</div>' +
-      '<div class="qlist">' + rowsHtml + '</div>' +
-      '<div class="summary-actions">' +
-        '<button class="btn" id="btnRetake">\ud83d\udd04 重新測驗這一組</button>' +
-        '<button class="btn primary" id="btnHome2">回首頁</button>' +
-      '</div>';
+function Home({best, noteCount, start, openNotes, practiceNotes}) {
+  const readQs = READ.flatMap(s => QS[s]), vocabQs = VOCAB.flatMap(s => QS[s]);
+  return (
+    <div className="pb-10 pt-6">
+      <div className="blueprint relative overflow-hidden rounded-3xl border border-line p-6 sm:p-8">
+        <div className="flex items-start justify-between gap-4">
+          <div className="min-w-0">
+            <Chip className="bg-primarysoft text-primary">READING QUIZ · GRADE 5</Chip>
+            <h1 className="mt-3 font-display text-4xl font-extrabold leading-tight sm:text-5xl" style={{textWrap:'balance'}}>Captain Arsenio</h1>
+            <p className="mt-2 text-muted">Fantasy · An eccentric captain &amp; his flying machines</p>
+          </div>
+          <div className="shrink-0"><Canary/></div>
+        </div>
+        <p className="mt-5 max-w-lg text-ink">分成 7 個小單元（閱讀理解 3 個、單字 4 個），每個單元約 10 題。答題後馬上看到對錯與中英雙語解析，答錯的題目會自動收進錯題筆記。</p>
+      </div>
 
-    appEl.querySelector("#btnBack").addEventListener("click", function(){ view="home"; render(); });
-    appEl.querySelector("#btnHome2").addEventListener("click", function(){ view="home"; render(); });
-    appEl.querySelector("#btnRetake").addEventListener("click", function(){
-      progress[curModule] = Q[curModule].map(function(){ return {sel:null, correct:null}; });
-      saveState();
-      curIndex = 0;
-      summaryFrom = false;
-      view = "quiz";
-      render();
-    });
-    Array.prototype.forEach.call(appEl.querySelectorAll(".qrow"), function(btn){
-      btn.addEventListener("click", function(){
-        curIndex = parseInt(btn.getAttribute("data-idx"), 10);
-        summaryFrom = true;
-        view = "quiz";
-        render();
-      });
-    });
-  }
+      <div className="mt-6 flex flex-col gap-3">
+        <FullCard tag="FULL TEST · READING" title="閱讀理解完整挑戰" desc="Quiz 1 + 2 + 3" qs={readQs} best={best.read}
+          onStart={() => start({key:'read', title:'閱讀理解 完整挑戰', secs:READ})}/>
+        <FullCard tag="FULL TEST · VOCAB" title="單字完整挑戰" desc="Vocab W4 + W5 + W6 + W7" qs={vocabQs} best={best.vocab}
+          onStart={() => start({key:'vocab', title:'單字 完整挑戰', secs:VOCAB})}/>
+      </div>
 
-  function render(){
-    window.scrollTo(0,0);
-    if(view === "home") renderHome();
-    else if(view === "quiz") renderQuiz();
-    else if(view === "summary") renderSummary();
-  }
+      <h2 className="mt-8 font-display text-xl font-extrabold">閱讀理解 Reading Comprehension</h2>
+      <p className="text-sm text-muted">依課文內容出題：角色、主題、推論與寫作手法。</p>
+      <div className="mt-3 grid gap-3 sm:grid-cols-2">
+        {READ.map(s =>
+          <UnitCard key={s} sec={SEC[s]} best={best} onStart={() => start({key:s, title:SEC[s].code + ' ' + SEC[s].zh, secs:[s]})}/>)}
+      </div>
 
-  render();
-})();
+      <h2 className="mt-8 font-display text-xl font-extrabold">單字 Vocabulary</h2>
+      <p className="text-sm text-muted">W4 ~ W7 單字，題型為字義配對與句子填空。</p>
+      <div className="mt-3 grid gap-3 sm:grid-cols-2">
+        {VOCAB.map(s =>
+          <UnitCard key={s} sec={SEC[s]} best={best} onStart={() => start({key:s, title:SEC[s].code + ' ' + SEC[s].en, secs:[s]})}/>)}
+      </div>
+
+      <section className="mt-8 rounded-2xl border border-line bg-card p-5">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <h2 className="font-display text-xl font-extrabold">錯題筆記</h2>
+            <p className="text-sm text-muted">{noteCount>0 ? `目前收藏 ${noteCount} 題，答對後可從筆記移除。` : '還沒有錯題。答錯的題目會自動收進來。'}</p>
+          </div>
+          <div className="flex gap-2">
+            <Btn kind="ghost" onClick={openNotes}>查看筆記</Btn>
+            <Btn onClick={practiceNotes} disabled={noteCount===0}>只重練錯題</Btn>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function Notebook({notes, onBack, onRemove, onClear, onPractice}) {
+  const ids = Object.keys(notes).filter(id => QBY[id]);
+  const [confirmClear, setConfirmClear] = useState(false);
+  return (
+    <div className="pb-10 pt-6">
+      <button onClick={onBack} className="mb-3 rounded-lg px-2 py-1 text-sm font-semibold text-muted hover:text-ink">← 回首頁</button>
+      <div className="blueprint rounded-3xl border border-line p-6">
+        <h1 className="font-display text-3xl font-extrabold">錯題筆記</h1>
+        <p className="mt-1 text-muted">共 {ids.length} 題。先讀解析，再按「只重練錯題」。</p>
+        <div className="mt-4 flex flex-wrap gap-2">
+          <Btn onClick={onPractice} disabled={ids.length===0}>只重練錯題</Btn>
+          {!confirmClear
+            ? <Btn kind="ghost" onClick={() => setConfirmClear(true)} disabled={ids.length===0}>清空筆記</Btn>
+            : <><Btn kind="ghost" onClick={() => setConfirmClear(false)}>取消</Btn><Btn className="!bg-bad" onClick={() => { onClear(); setConfirmClear(false); }}>確定清空</Btn></>}
+        </div>
+      </div>
+      {ids.length===0 && <p className="mt-6 rounded-2xl border border-line bg-card p-5 text-muted">目前沒有錯題。去挑戰一個單元，答錯的題目會自動出現在這裡。</p>}
+      {ORDER.map(s => {
+        const list = QS[s].filter(q => notes[q.id]);
+        if(!list.length) return null;
+        return (
+          <section key={s} className="mt-7">
+            <h2 className="font-display text-lg font-extrabold">{SEC[s].code} <span className="text-base font-semibold text-muted">{SEC[s].zh}</span></h2>
+            <div className="mt-3 flex flex-col gap-3">
+              {list.map(q => <NoteCard key={q.id} q={q} sec={SEC[s]} yours={notes[q.id].last} count={notes[q.id].n} onRemove={() => onRemove(q.id)}/>)}
+            </div>
+          </section>
+        );
+      })}
+    </div>
+  );
+}
+
+function App() {
+  const [view, setView] = useState('home');
+  const [session, setSession] = useState(null);
+  const [notes, setNotes] = useState(() => load(LS_NOTES, {}));
+  const [best, setBest] = useState(() => load(LS_BEST, {}));
+  useEffect(() => { save(LS_NOTES, notes); }, [notes]);
+  useEffect(() => { save(LS_BEST, best); }, [best]);
+
+  const begin = (cfg) => {
+    const parts = cfg.secs.map(s => ({ sec:SEC[s], qs: cfg.only ? QS[s].filter(q => cfg.only[q.id]) : QS[s] })).filter(p => p.qs.length);
+    const run = (n) => setSession({ ...cfg, parts, runId:n, retry: () => run(n+1) });
+    run(1); setView('quiz');
+  };
+  const start = (cfg) => begin({ mode:'unit', ...cfg });
+  const practiceNotes = () => begin({ key:'notes', title:'錯題重練', mode:'notes', secs:ORDER, only:notes });
+
+  const onRecord = (q, status, yours) => {
+    if(status !== 'right') setNotes(n => ({...n, [q.id]: { n:((n[q.id]&&n[q.id].n)||0)+1, last:yours, at:Date.now() }}));
+    else if(session && session.mode==='notes') setNotes(n => { const c={...n}; delete c[q.id]; return c; });
+  };
+  const onFinish = (key, score, total) => {
+    if(key==='notes') return;
+    setBest(b => (!b[key] || score/total > b[key].score/b[key].total) ? {...b, [key]:{score,total}} : b);
+  };
+  const removeNote = id => setNotes(n => { const c={...n}; delete c[id]; return c; });
+  const count = Object.keys(notes).filter(id => QBY[id]).length;
+
+  if(view==='quiz' && session) return <Quiz key={session.runId + session.key} session={session} onHome={() => setView('home')} onRecord={onRecord} onFinish={onFinish} onNotes={() => setView('notes')}/>;
+  if(view==='notes') return <Notebook notes={notes} onBack={() => setView('home')} onRemove={removeNote} onClear={() => setNotes({})} onPractice={practiceNotes}/>;
+  return <Home best={best} noteCount={count} start={start} openNotes={() => setView('notes')} practiceNotes={practiceNotes}/>;
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
 </script>
 </body>
 </html>
